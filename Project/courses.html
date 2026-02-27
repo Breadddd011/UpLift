@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/jpg" href="logo.jpg">
+  <title>Courses - UpLift</title>
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
+  background: #f5f5f5;
+  overflow-x: hidden;
+}
+
+nav {
+  padding: 20px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c3e50;
+  cursor: pointer;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+nav a {
+  color: #555;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+nav a:hover {
+  background: #2c3e50;
+  color: white;
+  transform: translateY(-2px);
+}
+
+nav a.active {
+  background: #2c3e50;
+  color: white;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.login-btn, .signup-btn {
+  padding: 10px 24px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid #2c3e50;
+  text-decoration: none;
+}
+
+.login-btn {
+  background: transparent;
+  color: #2c3e50;
+}
+
+.login-btn:hover {
+  background: #2c3e50;
+  color: white;
+}
+
+.signup-btn {
+  background: #2c3e50;
+  color: white;
+}
+
+.signup-btn:hover {
+  background: #1a252f;
+  transform: translateY(-2px);
+}
+
+.page-header {
+  position: relative;
+  color: white;
+  text-align: center;
+  padding: 140px 40px 80px;
+  margin-top: 0;
+  background-image: url('https://wallpaperaccess.com/full/2137313.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(52, 73, 94, 0.75));
+  z-index: 1;
+}
+
+.page-header-content {
+  position: relative;
+  z-index: 2;
+}
+
+.page-header h1 {
+  font-size: 56px;
+  font-weight: 900;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.8s ease;
+}
+
+.page-header p {
+  font-size: 20px;
+  opacity: 0.9;
+  max-width: 700px;
+  margin: 0 auto;
+  animation: fadeInUp 1s ease;
+}
+
+.filter-section {
+  background: white;
+  padding: 30px 40px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 80px;
+  z-index: 100;
+}
+
+.filter-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  background: #f8f9fa;
+  border: 2px solid #ecf0f1;
+  border-radius: 25px;
+  color: #555;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  background: #2c3e50;
+  color: white;
+  border-color: #2c3e50;
+}
+
+.courses-container {
+  max-width: 1300px;
+  margin: 60px auto;
+  padding: 0 40px;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.course-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.6s ease both;
+}
+
+.course-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Updated: image instead of emoji box */
+.course-image {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.course-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.course-card:hover .course-image img {
+  transform: scale(1.08);
+}
+
+.course-level {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3e50;
+  z-index: 2;
+}
+
+.course-content {
+  padding: 30px;
+}
+
+.course-category {
+  display: inline-block;
+  background: #ecf0f1;
+  color: #2c3e50;
+  padding: 6px 14px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.course-card h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.course-card p {
+  font-size: 15px;
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.course-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #95a5a6;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.enroll-btn {
+  width: 100%;
+  padding: 12px;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.enroll-btn:hover {
+  background: #1a252f;
+  transform: translateY(-2px);
+}
+
+footer {
+  background: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 80px;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* here's the animation for the course cards */
+.course-card:nth-child(1) { animation-delay: 0.05s; }
+.course-card:nth-child(2) { animation-delay: 0.1s; }
+.course-card:nth-child(3) { animation-delay: 0.15s; }
+.course-card:nth-child(4) { animation-delay: 0.2s; }
+.course-card:nth-child(5) { animation-delay: 0.25s; }
+.course-card:nth-child(6) { animation-delay: 0.3s; }
+.course-card:nth-child(7) { animation-delay: 0.35s; }
+.course-card:nth-child(8) { animation-delay: 0.4s; }
+.course-card:nth-child(9) { animation-delay: 0.45s; }
+.course-card:nth-child(10) { animation-delay: 0.5s; }
+.course-card:nth-child(11) { animation-delay: 0.55s; }
+.course-card:nth-child(12) { animation-delay: 0.6s; }
+
+@media (max-width: 768px) {
+  nav { padding: 15px 20px; }
+  nav ul { display: none; }
+  .page-header h1 { font-size: 38px; }
+  .courses-grid { grid-template-columns: 1fr; }
+  .filter-container { justify-content: center; }
+}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo" onclick="window.location.href='index.html'">UpLift</div>
+    <ul id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="teachers.html">Teachers</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="auth-buttons">
+      <a href="index.html" class="login-btn">Log In</a>
+      <a href="index.html" class="signup-btn">Sign Up</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <h1>Explore Our Courses</h1>
+      <p>Discover a wide range of high-quality courses designed to help you excel in your studies</p>
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-container">
+      <span class="filter-label">Filter by:</span>
+      <button class="filter-btn active" onclick="filterCourses('all')">All Courses</button>
+      <button class="filter-btn" onclick="filterCourses('mathematics')">Mathematics</button>
+      <button class="filter-btn" onclick="filterCourses('science')">Science</button>
+      <button class="filter-btn" onclick="filterCourses('language')">Language</button>
+      <button class="filter-btn" onclick="filterCourses('social')">Social Studies</button>
+    </div>
+  </div>
+
+  <div class="courses-container">
+    <div class="courses-grid" id="coursesGrid">
+
+      <!-- Mathematics Courses -->
+      <div class="course-card" data-category="mathematics">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=80" alt="Advanced Calculus">
+          <span class="course-level">Advanced</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">MATHEMATICS</span>
+          <h3>Advanced Calculus</h3>
+          <p>Master derivatives, integrals, and advanced calculus concepts with real-world applications</p>
+          <div class="course-meta">
+            <span>📊 45 Lessons</span>
+            <span>⏱️ 20 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Advanced Calculus')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="mathematics">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&q=80" alt="Algebra Mastery">
+          <span class="course-level">Intermediate</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">MATHEMATICS</span>
+          <h3>Algebra Mastery</h3>
+          <p>Build a strong foundation in algebraic concepts and problem-solving techniques</p>
+          <div class="course-meta">
+            <span>📊 38 Lessons</span>
+            <span>⏱️ 18 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Algebra Mastery')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="mathematics">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=600&q=80" alt="Geometry & Trigonometry">
+          <span class="course-level">Intermediate</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">MATHEMATICS</span>
+          <h3>Geometry & Trigonometry</h3>
+          <p>Explore shapes, angles, and spatial reasoning with interactive visual lessons</p>
+          <div class="course-meta">
+            <span>📊 35 Lessons</span>
+            <span>⏱️ 16 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Geometry & Trigonometry')">Enroll Now</button>
+        </div>
+      </div>
+
+      <!-- Science Courses -->
+      <div class="course-card" data-category="science">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&q=80" alt="Advanced Chemistry">
+          <span class="course-level">Advanced</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">SCIENCE</span>
+          <h3>Advanced Chemistry</h3>
+          <p>Dive deep into chemical reactions, organic chemistry, and laboratory techniques</p>
+          <div class="course-meta">
+            <span>🧪 42 Lessons</span>
+            <span>⏱️ 22 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Advanced Chemistry')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="science">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=600&q=80" alt="Physics Fundamentals">
+          <span class="course-level">Intermediate</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">SCIENCE</span>
+          <h3>Physics Fundamentals</h3>
+          <p>Understand motion, energy, forces, and the laws that govern our universe</p>
+          <div class="course-meta">
+            <span>🧲 40 Lessons</span>
+            <span>⏱️ 19 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Physics Fundamentals')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="science">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?w=600&q=80" alt="Biology Essentials">
+          <span class="course-level">Beginner</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">SCIENCE</span>
+          <h3>Biology Essentials</h3>
+          <p>Explore cells, genetics, ecosystems, and the diversity of life on Earth</p>
+          <div class="course-meta">
+            <span>🦠 36 Lessons</span>
+            <span>⏱️ 17 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Biology Essentials')">Enroll Now</button>
+        </div>
+      </div>
+
+      <!-- Language Courses (might change later) -->
+      <div class="course-card" data-category="language">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80" alt="English Literature">
+          <span class="course-level">Advanced</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">LANGUAGE ARTS</span>
+          <h3>English Literature</h3>
+          <p>Analyze classic and contemporary texts while developing critical thinking skills</p>
+          <div class="course-meta">
+            <span>✍️ 32 Lessons</span>
+            <span>⏱️ 15 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('English Literature')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="language">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=80" alt="Creative Writing">
+          <span class="course-level">Intermediate</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">LANGUAGE ARTS</span>
+          <h3>Creative Writing</h3>
+          <p>Develop your storytelling abilities through various writing styles and techniques</p>
+          <div class="course-meta">
+            <span>📝 28 Lessons</span>
+            <span>⏱️ 14 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Creative Writing')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="language">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&q=80" alt="Public Speaking">
+          <span class="course-level">Beginner</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">LANGUAGE ARTS</span>
+          <h3>Public Speaking</h3>
+          <p>Build confidence and master the art of effective communication and presentation</p>
+          <div class="course-meta">
+            <span>🎤 25 Lessons</span>
+            <span>⏱️ 12 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Public Speaking')">Enroll Now</button>
+        </div>
+      </div>
+
+      <!-- Social Studies Courses (might change later✌️) -->
+      <div class="course-card" data-category="social">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80" alt="World History">
+          <span class="course-level">Intermediate</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">SOCIAL STUDIES</span>
+          <h3>World History</h3>
+          <p>Journey through civilizations, empires, and events that shaped our world</p>
+          <div class="course-meta">
+            <span>🏛️ 44 Lessons</span>
+            <span>⏱️ 21 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('World History')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="social">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600&q=80" alt="Government & Politics">
+          <span class="course-level">Advanced</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">SOCIAL STUDIES</span>
+          <h3>Government & Politics</h3>
+          <p>Understand political systems, governance, and civic responsibilities</p>
+          <div class="course-meta">
+            <span>⚖️ 30 Lessons</span>
+            <span>⏱️ 16 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Government & Politics')">Enroll Now</button>
+        </div>
+      </div>
+
+      <div class="course-card" data-category="social">
+        <div class="course-image">
+          <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80" alt="Economics Basics">
+          <span class="course-level">Beginner</span>
+        </div>
+        <div class="course-content">
+          <span class="course-category">SOCIAL STUDIES</span>
+          <h3>Economics Basics</h3>
+          <p>Learn fundamental economic principles, markets, and financial literacy</p>
+          <div class="course-meta">
+            <span>📈 26 Lessons</span>
+            <span>⏱️ 13 Hours</span>
+          </div>
+          <button class="enroll-btn" onclick="enrollCourse('Economics Basics')">Enroll Now</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 UpLift. Empowering high school students to reach their full potential.</p>
+  </footer>
+
+  <script>
+    function filterCourses(category) {
+      const cards = document.querySelectorAll('.course-card');
+      const buttons = document.querySelectorAll('.filter-btn');
+
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function enrollCourse(courseName) {
+      alert('🎓 Enrolling in: ' + courseName + '\n\nPlease log in or sign up to continue!');
+      window.location.href = 'index.html';
+    }
+
+    window.addEventListener('scroll', function() {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.style.padding = '15px 60px';
+        nav.style.boxShadow = '0 4px 25px rgba(0, 0, 0, 0.12)';
+      } else {
+        nav.style.padding = '20px 60px';
+        nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.08)';
+      }
+    });
+  </script>
+</body>
+</html>
