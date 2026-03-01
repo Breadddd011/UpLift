@@ -257,6 +257,7 @@ body {
 }
 
 /* ---- WELCOME BANNER ---- */
+
 .welcome-banner {
   background: linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
   border-radius: 20px;
@@ -280,12 +281,34 @@ body {
   opacity: 0.12;
 }
 
+.welcome-text {
+  flex: 1;
+  min-width: 0;
+}
+
 .welcome-text h1 {
   font-size: 28px;
   font-weight: 800;
   color: #ffffff;
   margin-bottom: 8px;
   letter-spacing: -0.5px;
+}
+
+/* ---- MARQUEE ANIMATION ---- */
+@keyframes marquee {
+  0%   { transform: translateX(60%); }
+  100% { transform: translateX(-100%); }
+}
+
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-wrapper h1 {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite;
 }
 
 .welcome-text p {
@@ -681,7 +704,7 @@ body {
   .sidebar.mobile-open { transform: translateX(0); }
   .main-content { margin-left: 0; padding: 16px; }
   .welcome-banner { flex-direction: column; gap: 16px; padding: 24px 20px; }
-  .welcome-text h1 { font-size: 22px; }
+  .marquee-wrapper h1 { font-size: 22px; }
   .welcome-banner::after { display: none; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .course-item { flex-direction: column; align-items: flex-start; }
@@ -690,4 +713,37 @@ body {
 
 @media (max-width: 400px) {
   .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== DARK MODE (HOPE ITT WORKS HUHU) ===== */
+[data-theme="dark"] {
+  --bg-main: #0f1117;
+  --bg-card: #1c1f29;
+  --bg-nav: #13151f;
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0b0;
+  --border-color: #2a2d3e;
+}
+
+[data-theme="dark"] body { background: var(--bg-main); color: var(--text-primary); }
+[data-theme="dark"] .top-nav { background: var(--bg-nav); border-bottom: 1px solid var(--border-color); }
+[data-theme="dark"] .sidebar { background: var(--bg-nav); border-right: 1px solid var(--border-color); }
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .dashboard-section,
+[data-theme="dark"] .welcome-banner { background: var(--bg-card); color: var(--text-primary); }
+[data-theme="dark"] .nav-item { color: var(--text-secondary); }
+[data-theme="dark"] .search-bar input { background: #1a1d27; color: var(--text-primary); border-color: var(--border-color); }
+
+/* Smooth transition */
+body, .top-nav, .stat-card, .dashboard-section, .welcome-banner {
+  transition: background 0.3s, color 0.3s;
+}
+
+/* toggle button style */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  margin-right: 8px;
 }
