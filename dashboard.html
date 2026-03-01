@@ -4,7 +4,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/jpg" href="logo.jpg">
+  <link rel="icon" type="image/jpg" href="logo2.png">
   <title>UpLift — Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
 </head>
@@ -23,6 +23,7 @@
       </div>
     </div>
     <div class="nav-right">
+      <button class="theme-toggle-btn" onclick="toggleTheme()">🌑</button>
       <button class="notification-btn">
         <span class="icon">🔔</span>
         <span class="badge">2</span>
@@ -153,6 +154,22 @@
   </div>
 
   <script>
+    // dark mode
+    function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.querySelector('.theme-toggle-btn').textContent = next === 'dark' ? '☀️' : '🌑'; // fixed typo
+  }
+
+  // Load saved theme on page load
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.querySelector('.theme-toggle-btn').textContent = savedTheme === 'dark' ? '☀️' : '🌑';
+  }
+    
     // Mobile sidebar toggle
     document.getElementById('menuToggle').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('mobile-open');
