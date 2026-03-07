@@ -11,7 +11,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ---- TOP NAV ---- */
 .top-nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -176,14 +175,12 @@ body {
   color: #aaa;
 }
 
-/* ---- LAYOUT ---- */
 .dashboard-container {
   display: flex;
   margin-top: 70px;
   min-height: calc(100vh - 70px);
 }
 
-/* ---- SIDEBAR ---- */
 .sidebar {
   width: 240px;
   background: #ffffff;
@@ -194,6 +191,20 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+
+  /* ============================================
+     ADDED: smooth open/close transition
+     ============================================ */
+  transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+}
+
+/* ============================================
+   ADDED: collapsed state for desktop sidebar
+   ============================================ */
+.sidebar.collapsed {
+  width: 0;
+  padding: 24px 0;
 }
 
 .sidebar-nav {
@@ -214,6 +225,7 @@ body {
   font-weight: 600;
   font-size: 15px;
   transition: all 0.2s;
+  white-space: nowrap; /* =====  ADDED: prevent text wrapping while closing ===== */
 }
 
 .nav-item:hover {
@@ -249,11 +261,18 @@ body {
   color: #ee5a5a !important;
 }
 
-/* ---- MAIN CONTENT ---- */
 .main-content {
   flex: 1;
   margin-left: 240px;
   padding: 32px;
+  transition: margin-left 0.3s ease, max-width 0.3s ease;
+  max-width: calc(100% - 240px);  /* ==== ADDED: prevent content from stretching too wide ===== */
+  width: 100%;
+}
+
+.main-content.sidebar-closed {
+  margin-left: 0;
+  max-width: 100%;
 }
 
 /* ---- WELCOME BANNER ---- */
@@ -294,7 +313,7 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* ---- MARQUEE ANIMATION ---- */
+/* ---- this part doesn't even work so... ---- */
 @keyframes marquee {
   0%   { transform: translateX(60%); }
   100% { transform: translateX(-100%); }
@@ -337,7 +356,6 @@ body {
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* ---- STATS GRID ---- */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -423,14 +441,12 @@ body {
   color: #e74c3c;
 }
 
-/* ---- CONTENT GRID ---- */
 .content-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 20px;
 }
 
-/* ---- DASHBOARD SECTION ---- */
 .dashboard-section {
   background: #ffffff;
   border-radius: 16px;
@@ -468,7 +484,6 @@ body {
   color: white;
 }
 
-/* ---- COURSE ITEM ---- */
 .courses-list {
   display: flex;
   flex-direction: column;
@@ -579,7 +594,6 @@ body {
   box-shadow: 0 6px 15px rgba(102,126,234,0.4);
 }
 
-/* ---- DEADLINE ---- */
 .deadline-list {
   display: flex;
   flex-direction: column;
@@ -671,13 +685,11 @@ body {
   border: 1px solid #ffd5d5;
 }
 
-/* ---- SCROLLBAR ---- */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f0f2f8; }
 ::-webkit-scrollbar-thumb { background: #c8cdd8; border-radius: 6px; }
 ::-webkit-scrollbar-thumb:hover { background: #aab0be; }
 
-/* ---- ANIMATIONS ---- */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
@@ -688,7 +700,6 @@ body {
 .stat-card:nth-child(2) { animation-delay: 0.08s; }
 .dashboard-section { animation: fadeInUp 0.5s ease 0.15s both; }
 
-/* ---- RESPONSIVE ---- */
 @media (max-width: 1200px) {
   .content-grid { grid-template-columns: 1fr; }
 }
@@ -709,13 +720,22 @@ body {
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .course-item { flex-direction: column; align-items: flex-start; }
   .btn-continue { width: 100%; text-align: center; }
+
+  /* ================== ADDED: disable desktop collapse on mobile ======================= */
+  .sidebar.collapsed {
+    width: 240px;
+    padding: 24px 12px;
+  }
+  .main-content.sidebar-closed {
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 400px) {
   .stats-grid { grid-template-columns: 1fr; }
 }
 
-/* ===== DARK MODE (HOPE ITT WORKS HUHU) ===== */
+/* ===== DARK MODE (not done yet) ===== */
 [data-theme="dark"] {
   --bg-main: #0f1117;
   --bg-card: #1c1f29;
@@ -734,12 +754,12 @@ body {
 [data-theme="dark"] .nav-item { color: var(--text-secondary); }
 [data-theme="dark"] .search-bar input { background: #1a1d27; color: var(--text-primary); border-color: var(--border-color); }
 
-/* Smooth transition */
+/* smooth transition when turning the dark mode on */
 body, .top-nav, .stat-card, .dashboard-section, .welcome-banner {
   transition: background 0.3s, color 0.3s;
 }
 
-/* toggle button style */
+/* toggle button 🌑 */
 .theme-toggle-btn {
   background: none;
   border: none;
