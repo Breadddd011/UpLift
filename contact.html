@@ -7,371 +7,129 @@
   <link rel="icon" type="image/jpg" href="logo.jpg">
   <title>Contact - UpLift</title>
   <style>
-  * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  min-height: 100vh;
-  background: #f5f5f5;
-  overflow-x: hidden;
-}
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh; background: #f5f5f5; overflow-x: hidden;
+  }
 
-nav {
-  padding: 20px 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-}
+  nav {
+    padding: 20px 60px; display: flex; justify-content: space-between; align-items: center;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease;
+  }
 
-.logo {
-  font-size: 28px;
-  font-weight: 800;
-  color: #2c3e50;
-  cursor: pointer;
-}
+  .logo { font-size: 28px; font-weight: 800; color: #2c3e50; cursor: pointer; }
+  nav ul { list-style: none; display: flex; gap: 30px; }
+  nav a { color: #555; text-decoration: none; font-size: 16px; padding: 10px 20px; border-radius: 25px; transition: all 0.3s; font-weight: 600; }
+  nav a:hover { background: #2c3e50; color: white; transform: translateY(-2px); }
+  nav a.active { background: #2c3e50; color: white; }
 
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 30px;
-}
+  .auth-buttons { display: flex; gap: 15px; align-items: center; }
+  .login-btn, .signup-btn { padding: 10px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; border: 2px solid #2c3e50; text-decoration: none; }
+  .login-btn { background: transparent; color: #2c3e50; }
+  .login-btn:hover { background: #2c3e50; color: white; }
+  .signup-btn { background: #2c3e50; color: white; }
+  .signup-btn:hover { background: #1a252f; transform: translateY(-2px); }
 
-nav a {
-  color: #555;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 10px 20px;
-  border-radius: 25px;
-  transition: all 0.3s;
-  font-weight: 600;
-}
+  /* UPDATED: hamburger button */
+  .hamburger { display: none; background: none; border: none; font-size: 26px; cursor: pointer; color: #2c3e50; padding: 4px 8px; line-height: 1; }
 
-nav a:hover {
-  background: #2c3e50;
-  color: white;
-  transform: translateY(-2px);
-}
+  .page-header {
+    position: relative; color: white; text-align: center; padding: 140px 40px 80px; margin-top: 0;
+    background-image: url('https://img.freepik.com/premium-photo/school-supplies-background-abstract-blackboard-drawing-elements-linear-manner_1257429-28043.jpg');
+    background-size: cover; background-position: center;
+    /* UPDATED: scroll instead of fixed for iOS Safari */
+    background-attachment: scroll;
+    min-height: 400px; display: flex; align-items: center; justify-content: center;
+  }
 
-nav a.active {
-  background: #2c3e50;
-  color: white;
-}
+  .page-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(52, 73, 94, 0.75)); z-index: 1; }
+  .page-header-content { position: relative; z-index: 2; }
+  .page-header h1 { font-size: 56px; font-weight: 900; margin-bottom: 20px; animation: fadeInUp 0.8s ease; }
+  .page-header p { font-size: 20px; opacity: 0.9; max-width: 700px; margin: 0 auto; animation: fadeInUp 1s ease; }
 
-.auth-buttons {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
+  .contact-container { max-width: 1200px; margin: 80px auto; padding: 0 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
 
-.login-btn, .signup-btn {
-  padding: 10px 24px;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  border: 2px solid #2c3e50;
-  text-decoration: none;
-}
+  .contact-form-section { background: white; padding: 50px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); animation: fadeInUp 0.6s ease 0.1s both; }
+  .contact-form-section h2 { font-size: 32px; font-weight: 800; color: #2c3e50; margin-bottom: 30px; }
 
-.login-btn {
-  background: transparent;
-  color: #2c3e50;
-}
+  .form-group { margin-bottom: 25px; }
+  .form-group label { display: block; margin-bottom: 10px; color: #2c3e50; font-weight: 700; font-size: 15px; }
+  .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 14px 18px; border: 2px solid #ecf0f1; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: inherit; background: #f8f9fa; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #2c3e50; background: white; }
+  .form-group textarea { resize: vertical; min-height: 150px; }
 
-.login-btn:hover {
-  background: #2c3e50;
-  color: white;
-}
+  .submit-btn { width: 100%; padding: 16px; background: #2c3e50; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+  .submit-btn:hover { background: #1a252f; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(44, 62, 80, 0.3); }
 
-.signup-btn {
-  background: #2c3e50;
-  color: white;
-}
+  .contact-info-section { display: flex; flex-direction: column; gap: 30px; }
 
-.signup-btn:hover {
-  background: #1a252f;
-  transform: translateY(-2px);
-}
+  .info-card { background: white; padding: 35px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s; animation: fadeInUp 0.6s ease both; }
+  .info-card:nth-child(1) { animation-delay: 0.15s; }
+  .info-card:nth-child(2) { animation-delay: 0.25s; }
+  .info-card:nth-child(3) { animation-delay: 0.35s; }
+  .info-card:nth-child(4) { animation-delay: 0.45s; }
+  .info-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
+  .info-icon { font-size: 48px; margin-bottom: 15px; }
+  .info-card h3 { font-size: 22px; font-weight: 800; color: #2c3e50; margin-bottom: 12px; }
+  .info-card p { font-size: 16px; color: #7f8c8d; line-height: 1.6; }
+  .info-card a { color: #3498db; text-decoration: none; font-weight: 600; }
+  .info-card a:hover { text-decoration: underline; }
 
-.page-header {
-  position: relative;
-  color: white;
-  text-align: center;
-  padding: 140px 40px 80px;
-  margin-top: 0;
-  background-image: url('https://img.freepik.com/premium-photo/school-supplies-background-abstract-blackboard-drawing-elements-linear-manner_1257429-28043.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .faq-section { max-width: 900px; margin: 80px auto; padding: 0 40px; }
+  .faq-section h2 { text-align: center; font-size: 42px; font-weight: 900; color: #2c3e50; margin-bottom: 50px; animation: fadeInUp 0.6s ease both; }
 
-.page-header::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(52, 73, 94, 0.75));
-  z-index: 1;
-}
+  .faq-item { background: white; padding: 30px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); cursor: pointer; transition: all 0.3s; animation: fadeInUp 0.6s ease both; }
+  .faq-item:nth-child(2) { animation-delay: 0.05s; }
+  .faq-item:nth-child(3) { animation-delay: 0.1s; }
+  .faq-item:nth-child(4) { animation-delay: 0.15s; }
+  .faq-item:nth-child(5) { animation-delay: 0.2s; }
+  .faq-item:nth-child(6) { animation-delay: 0.25s; }
+  .faq-item:nth-child(7) { animation-delay: 0.3s; }
+  .faq-item:hover { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); }
+  .faq-question { font-size: 20px; font-weight: 800; color: #2c3e50; display: flex; justify-content: space-between; align-items: center; }
+  .faq-arrow { font-size: 24px; transition: transform 0.3s; }
+  .faq-answer { margin-top: 15px; font-size: 16px; color: #7f8c8d; line-height: 1.7; display: none; }
+  .faq-item.active .faq-answer { display: block; }
+  .faq-item.active .faq-arrow { transform: rotate(180deg); }
 
-.page-header-content {
-  position: relative;
-  z-index: 2;
-}
+  footer { background: #2c3e50; color: white; text-align: center; padding: 40px 20px; margin-top: 80px; }
 
-.page-header h1 {
-  font-size: 56px;
-  font-weight: 900;
-  margin-bottom: 20px;
-  animation: fadeInUp 0.8s ease;
-}
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-.page-header p {
-  font-size: 20px;
-  opacity: 0.9;
-  max-width: 700px;
-  margin: 0 auto;
-  animation: fadeInUp 1s ease;
-}
+  /* UPDATED: full mobile responsive block with hamburger support */
+  @media (max-width: 968px) {
+    nav { padding: 15px 20px; flex-wrap: wrap; }
 
-.contact-container {
-  max-width: 1200px;
-  margin: 80px auto;
-  padding: 0 40px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 50px;
-}
+    /* UPDATED: show hamburger, hide desktop nav */
+    .hamburger { display: block; }
 
-.contact-form-section {
-  background: white;
-  padding: 50px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  animation: fadeInUp 0.6s ease 0.1s both;
-}
+    nav ul { display: none; width: 100%; flex-direction: column; gap: 8px; padding: 10px 0 5px; order: 3; }
+    nav ul.mobile-open { display: flex; }
+    nav ul li a { display: block; padding: 10px 16px; border-radius: 10px; }
 
-.contact-form-section h2 {
-  font-size: 32px;
-  font-weight: 800;
-  color: #2c3e50;
-  margin-bottom: 30px;
-}
+    .auth-buttons { display: none; width: 100%; justify-content: center; gap: 10px; order: 4; padding-bottom: 10px; }
+    .auth-buttons.mobile-open { display: flex; }
 
-.form-group {
-  margin-bottom: 25px;
-}
+    /* UPDATED: smaller header text */
+    .page-header { padding: 110px 20px 60px; }
+    .page-header h1 { font-size: 32px; }
+    .page-header p { font-size: 16px; }
 
-.form-group label {
-  display: block;
-  margin-bottom: 10px;
-  color: #2c3e50;
-  font-weight: 700;
-  font-size: 15px;
-}
+    /* UPDATED: stack contact form and info on mobile */
+    .contact-container { grid-template-columns: 1fr; padding: 0 16px; margin: 40px auto; gap: 30px; }
+    .contact-form-section { padding: 30px 20px; }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
-  width: 100%;
-  padding: 14px 18px;
-  border: 2px solid #ecf0f1;
-  border-radius: 10px;
-  font-size: 16px;
-  transition: all 0.3s;
-  font-family: inherit;
-  background: #f8f9fa;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #2c3e50;
-  background: white;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 150px;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 16px;
-  background: #2c3e50;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.submit-btn:hover {
-  background: #1a252f;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(44, 62, 80, 0.3);
-}
-
-.contact-info-section {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.info-card {
-  background: white;
-  padding: 35px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s;
-  animation: fadeInUp 0.6s ease both;
-}
-
-.info-card:nth-child(1) { animation-delay: 0.15s; }
-.info-card:nth-child(2) { animation-delay: 0.25s; }
-.info-card:nth-child(3) { animation-delay: 0.35s; }
-.info-card:nth-child(4) { animation-delay: 0.45s; }
-
-.info-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-}
-
-.info-icon {
-  font-size: 48px;
-  margin-bottom: 15px;
-}
-
-.info-card h3 {
-  font-size: 22px;
-  font-weight: 800;
-  color: #2c3e50;
-  margin-bottom: 12px;
-}
-
-.info-card p {
-  font-size: 16px;
-  color: #7f8c8d;
-  line-height: 1.6;
-}
-
-.info-card a {
-  color: #3498db;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.info-card a:hover {
-  text-decoration: underline;
-}
-
-.faq-section {
-  max-width: 900px;
-  margin: 80px auto;
-  padding: 0 40px;
-}
-
-.faq-section h2 {
-  text-align: center;
-  font-size: 42px;
-  font-weight: 900;
-  color: #2c3e50;
-  margin-bottom: 50px;
-  animation: fadeInUp 0.6s ease both;
-}
-
-.faq-item {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-  transition: all 0.3s;
-  animation: fadeInUp 0.6s ease both;
-}
-
-.faq-item:nth-child(2) { animation-delay: 0.05s; }
-.faq-item:nth-child(3) { animation-delay: 0.1s; }
-.faq-item:nth-child(4) { animation-delay: 0.15s; }
-.faq-item:nth-child(5) { animation-delay: 0.2s; }
-.faq-item:nth-child(6) { animation-delay: 0.25s; }
-.faq-item:nth-child(7) { animation-delay: 0.3s; }
-
-.faq-item:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.faq-question {
-  font-size: 20px;
-  font-weight: 800;
-  color: #2c3e50;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.faq-arrow {
-  font-size: 24px;
-  transition: transform 0.3s;
-}
-
-.faq-answer {
-  margin-top: 15px;
-  font-size: 16px;
-  color: #7f8c8d;
-  line-height: 1.7;
-  display: none;
-}
-
-.faq-item.active .faq-answer {
-  display: block;
-}
-
-.faq-item.active .faq-arrow {
-  transform: rotate(180deg);
-}
-
-footer {
-  background: #2c3e50;
-  color: white;
-  text-align: center;
-  padding: 40px 20px;
-  margin-top: 80px;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 968px) {
-  nav { padding: 15px 20px; }
-  nav ul { display: none; }
-  .page-header h1 { font-size: 38px; }
-  .contact-container { grid-template-columns: 1fr; }
-  .contact-form-section { padding: 30px; }
-}
+    .faq-section { padding: 0 16px; }
+    .faq-section h2 { font-size: 30px; }
+    .faq-question { font-size: 16px; }
+  }
   </style>
 </head>
 <body>
@@ -384,10 +142,12 @@ footer {
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html" class="active">Contact</a></li>
     </ul>
-    <div class="auth-buttons">
+    <div class="auth-buttons" id="authButtons">
       <a href="index.html" class="login-btn">Log In</a>
       <a href="index.html" class="signup-btn">Sign Up</a>
     </div>
+    <!-- UPDATED: hamburger button for mobile nav -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
   </nav>
 
   <div class="page-header">
@@ -490,11 +250,11 @@ footer {
   </footer>
 
   <script>
-    // ✅ Supabase setup
+    // supabase setup
     const { createClient } = supabase
     const client = createClient(
-      'https://tiyapgnehlwbhhzqqumq.supabase.co', 
-      'sb_publishable_TshJnLexCo4FrHe_YJ8l7g_QcxA_kaV'  
+      'https://tiyapgnehlwbhhzqqumq.supabase.co',
+      'sb_publishable_TshJnLexCo4FrHe_YJ8l7g_QcxA_kaV'
     )
 
     async function handleSubmit(event) {
@@ -504,9 +264,7 @@ footer {
       const subject = document.getElementById('subject').value
       const message = document.getElementById('message').value
 
-      const { error } = await client.from('messages').insert([
-        { name, email, subject, message }
-      ])
+      const { error } = await client.from('messages').insert([{ name, email, subject, message }])
 
       if (error) {
         alert('❌ Something went wrong. Please try again!')
@@ -527,15 +285,26 @@ footer {
       alert('💬 Live chat feature coming soon!\n\nIn the meantime, please send us an email at support@uplift.com or call us at +1 (555) 123-4567');
     }
 
+    // UPDATED: scroll handler checks screen width before applying desktop padding
     window.addEventListener('scroll', function() {
       const nav = document.querySelector('nav');
+      const isMobile = window.innerWidth <= 968;
       if (window.scrollY > 50) {
-        nav.style.padding = '15px 60px';
+        nav.style.padding = isMobile ? '12px 16px' : '15px 60px';
         nav.style.boxShadow = '0 4px 25px rgba(0, 0, 0, 0.12)';
       } else {
-        nav.style.padding = '20px 60px';
+        nav.style.padding = isMobile ? '15px 20px' : '20px 60px';
         nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.08)';
       }
+    });
+
+    // UPDATED: hamburger toggles mobile nav menu and auth buttons
+    document.getElementById('hamburger').addEventListener('click', function() {
+      const menu = document.getElementById('navMenu');
+      const auth = document.getElementById('authButtons');
+      menu.classList.toggle('mobile-open');
+      auth.classList.toggle('mobile-open');
+      this.textContent = menu.classList.contains('mobile-open') ? '✕' : '☰';
     });
   </script>
 </body>
