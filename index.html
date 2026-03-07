@@ -107,6 +107,18 @@ nav a.active {
   transform: translateY(-2px);
 }
 
+/* UPDATED: added hamburger button styles */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #2c3e50;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
 .hero {
   position: relative;
   text-align: center;
@@ -115,7 +127,8 @@ nav a.active {
   background-image: url('https://wallpaperaccess.com/full/2137313.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  /* UPDATED: fixed causes iOS Safari bugs, using scroll instead */
+  background-attachment: scroll;
   min-height: 600px;
   display: flex;
   align-items: center;
@@ -299,7 +312,6 @@ nav a.active {
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* Real image styles */
 .course-image {
   width: 100%;
   height: 200px;
@@ -478,15 +490,89 @@ footer {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* UPDATED: mobile breakpoint with hamburger menu support */
 @media (max-width: 768px) {
-  nav { padding: 15px 20px; }
-  nav ul { gap: 15px; }
-  nav a { padding: 8px 15px; font-size: 14px; }
-  .hero { padding: 150px 20px 80px; }
-  .hero h1 { font-size: 42px; }
-  .hero p { font-size: 18px; }
-  .section-title { font-size: 36px; }
-  .stats { margin: -40px 20px 40px; padding: 40px 20px; }
+  nav {
+    padding: 15px 20px;
+    flex-wrap: wrap;
+  }
+
+  /* UPDATED: show hamburger, hide desktop nav and auth buttons */
+  .hamburger {
+    display: block;
+  }
+
+  nav ul {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 0 5px;
+    order: 3;
+  }
+
+  /* UPDATED: show nav menu when mobile-open class is toggled by JS */
+  nav ul.mobile-open {
+    display: flex;
+  }
+
+  nav ul li a {
+    display: block;
+    padding: 10px 16px;
+    border-radius: 10px;
+  }
+
+  .auth-buttons {
+    display: none;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+    order: 4;
+    padding-bottom: 10px;
+  }
+
+  /* UPDATED: show auth buttons alongside nav when mobile-open */
+  .auth-buttons.mobile-open {
+    display: flex;
+  }
+
+  .hero {
+    padding: 120px 20px 80px;
+  }
+
+  /* UPDATED: smaller hero title on mobile */
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .hero p {
+    font-size: 17px;
+  }
+
+  .cta-button {
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+
+  .section-title {
+    font-size: 30px;
+  }
+
+  /* UPDATED: stats card shouldn't float off-screen on small phones */
+  .stats {
+    margin: -30px 16px 40px;
+    padding: 30px 20px;
+    gap: 24px;
+  }
+
+  .stat-number {
+    font-size: 36px;
+  }
+
+  .features-section,
+  .courses-section {
+    padding: 60px 20px;
+  }
 }
   </style>
 </head>
@@ -500,10 +586,12 @@ footer {
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <div class="auth-buttons">
+    <div class="auth-buttons" id="authButtons">
       <button class="login-btn" onclick="openLoginModal()">Log In</button>
       <button class="signup-btn" onclick="openSignupModal()">Sign Up</button>
     </div>
+    <!-- UPDATED: added hamburger button for mobile nav toggle -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
   </nav>
 
   <div id="home" class="hero">
@@ -612,7 +700,7 @@ footer {
     <p>&copy; 2026 UpLift. Empowering high school students to reach their full potential. 0.0</p>
   </footer>
 
-  <!-- Login Modal -->
+  <!-- login -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeLoginModal()">&times;</span>
@@ -634,7 +722,7 @@ footer {
     </div>
   </div>
 
-  <!-- Signup Modal -->
+  <!-- signup -->
   <div id="signupModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeSignupModal()">&times;</span>
@@ -661,14 +749,14 @@ footer {
   </div>
 
   <script>
-    // Supabase setup
+    // diz is my Supabase setup
     const { createClient } = supabase
     const client = createClient(
       'https://tiyapgnehlwbhhzqqumq.supabase.co',
       'sb_publishable_TshJnLexCo4FrHe_YJ8l7g_QcxA_kaV'
     )
 
-    // If already logged in AND email confirmed, go to dashboard
+    // if u're already logged in and u're email is confirmed, go to dashboard
     window.addEventListener('DOMContentLoaded', async () => {
       const { data: { user } } = await client.auth.getUser()
       if (user && user.email_confirmed_at) {
@@ -676,13 +764,15 @@ footer {
       }
     });
 
+    // UPDATED: scroll handler now checks screen width before applying desktop padding
     window.addEventListener('scroll', function() {
       const nav = document.querySelector('nav');
+      const isMobile = window.innerWidth <= 768;
       if (window.scrollY > 50) {
-        nav.style.padding = '15px 60px';
+        nav.style.padding = isMobile ? '12px 16px' : '15px 60px';
         nav.style.boxShadow = '0 4px 25px rgba(0, 0, 0, 0.12)';
       } else {
-        nav.style.padding = '20px 60px';
+        nav.style.padding = isMobile ? '15px 20px' : '20px 60px';
         nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.08)';
       }
     });
@@ -692,6 +782,15 @@ footer {
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         this.classList.add('active');
       });
+    });
+
+    // UPDATED: hamburger toggles nav menu and auth buttons on mobile
+    document.getElementById('hamburger').addEventListener('click', function() {
+      const menu = document.getElementById('navMenu');
+      const auth = document.getElementById('authButtons');
+      menu.classList.toggle('mobile-open');
+      auth.classList.toggle('mobile-open');
+      this.textContent = menu.classList.contains('mobile-open') ? '✕' : '☰';
     });
 
     function startLearning() {
@@ -739,7 +838,7 @@ footer {
       if (e.target === signupModal) closeSignupModal();
     });
 
-    // Handle Login — checks email confirmation before redirecting
+    // handle Login
     async function handleLogin(event) {
       event.preventDefault();
       const email = document.getElementById('loginEmail').value;
@@ -760,7 +859,7 @@ footer {
       }
     }
 
-    // Handle Signup — creates account and prompts email confirmation
+    // handle Signup
     async function handleSignup(event) {
       event.preventDefault();
       const name = document.getElementById('signupName').value;
