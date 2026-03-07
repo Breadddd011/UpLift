@@ -106,6 +106,18 @@ nav a.active {
   transform: translateY(-2px);
 }
 
+/* UPDATED: hamburger button styles */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #2c3e50;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
 .page-header {
   position: relative;
   color: white;
@@ -115,7 +127,8 @@ nav a.active {
   background-image: url('https://wallpaperaccess.com/full/2137313.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  /* UPDATED: scroll instead of fixed to fix iOS Safari parallax bug */
+  background-attachment: scroll;
   min-height: 400px;
   display: flex;
   align-items: center;
@@ -219,7 +232,6 @@ nav a.active {
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* Updated: image instead of emoji box */
 .course-image {
   width: 100%;
   height: 200px;
@@ -319,7 +331,7 @@ footer {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* here's the animation for the course cards */
+
 .course-card:nth-child(1) { animation-delay: 0.05s; }
 .course-card:nth-child(2) { animation-delay: 0.1s; }
 .course-card:nth-child(3) { animation-delay: 0.15s; }
@@ -333,12 +345,87 @@ footer {
 .course-card:nth-child(11) { animation-delay: 0.55s; }
 .course-card:nth-child(12) { animation-delay: 0.6s; }
 
+/* UPDATED: mobile breakpoint with hamburger menu */
 @media (max-width: 768px) {
-  nav { padding: 15px 20px; }
-  nav ul { display: none; }
-  .page-header h1 { font-size: 38px; }
-  .courses-grid { grid-template-columns: 1fr; }
-  .filter-container { justify-content: center; }
+  nav {
+    padding: 15px 20px;
+    flex-wrap: wrap;
+  }
+
+  /* UPDATED: show hamburger, hide desktop nav links */
+  .hamburger {
+    display: block;
+  }
+
+  nav ul {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 0 5px;
+    order: 3;
+  }
+
+  nav ul.mobile-open {
+    display: flex;
+  }
+
+  nav ul li a {
+    display: block;
+    padding: 10px 16px;
+    border-radius: 10px;
+  }
+
+  .auth-buttons {
+    display: none;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+    order: 4;
+    padding-bottom: 10px;
+  }
+
+  .auth-buttons.mobile-open {
+    display: flex;
+  }
+
+  /* UPDATED: smaller header text on phones */
+  .page-header {
+    padding: 110px 20px 60px;
+  }
+
+  .page-header h1 {
+    font-size: 32px;
+  }
+
+  .page-header p {
+    font-size: 16px;
+  }
+
+  /* UPDATED: single-column course grid on small screens */
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .courses-container {
+    padding: 0 16px;
+    margin: 40px auto;
+  }
+
+  .filter-section {
+    padding: 20px 16px;
+    top: 70px;
+  }
+
+  .filter-container {
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .filter-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
 }
   </style>
 </head>
@@ -352,10 +439,12 @@ footer {
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <div class="auth-buttons">
+    <div class="auth-buttons" id="authButtons">
       <a href="index.html" class="login-btn">Log In</a>
       <a href="index.html" class="signup-btn">Sign Up</a>
     </div>
+    <!-- UPDATED: hamburger button for mobile -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
   </nav>
 
   <div class="page-header">
@@ -368,18 +457,17 @@ footer {
   <div class="filter-section">
     <div class="filter-container">
       <span class="filter-label">Filter by:</span>
-      <button class="filter-btn active" onclick="filterCourses('all')">All Courses</button>
-      <button class="filter-btn" onclick="filterCourses('mathematics')">Mathematics</button>
-      <button class="filter-btn" onclick="filterCourses('science')">Science</button>
-      <button class="filter-btn" onclick="filterCourses('language')">Language</button>
-      <button class="filter-btn" onclick="filterCourses('social')">Social Studies</button>
+      <button class="filter-btn active" onclick="filterCourses('all', event)">All Courses</button>
+      <button class="filter-btn" onclick="filterCourses('mathematics', event)">Mathematics</button>
+      <button class="filter-btn" onclick="filterCourses('science', event)">Science</button>
+      <button class="filter-btn" onclick="filterCourses('language', event)">Language</button>
+      <button class="filter-btn" onclick="filterCourses('social', event)">Social Studies</button>
     </div>
   </div>
 
   <div class="courses-container">
     <div class="courses-grid" id="coursesGrid">
 
-      <!-- Mathematics Courses -->
       <div class="course-card" data-category="mathematics">
         <div class="course-image">
           <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=80" alt="Advanced Calculus">
@@ -431,7 +519,6 @@ footer {
         </div>
       </div>
 
-      <!-- Science Courses -->
       <div class="course-card" data-category="science">
         <div class="course-image">
           <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&q=80" alt="Advanced Chemistry">
@@ -483,7 +570,6 @@ footer {
         </div>
       </div>
 
-      <!-- Language Courses (might change later) -->
       <div class="course-card" data-category="language">
         <div class="course-image">
           <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80" alt="English Literature">
@@ -535,7 +621,6 @@ footer {
         </div>
       </div>
 
-      <!-- Social Studies Courses (might change later✌️) -->
       <div class="course-card" data-category="social">
         <div class="course-image">
           <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80" alt="World History">
@@ -595,7 +680,8 @@ footer {
   </footer>
 
   <script>
-    function filterCourses(category) {
+    // UPDATED: fixed filterCourses to accept event param instead of relying on implicit `event`
+    function filterCourses(category, event) {
       const cards = document.querySelectorAll('.course-card');
       const buttons = document.querySelectorAll('.filter-btn');
 
@@ -616,15 +702,26 @@ footer {
       window.location.href = 'index.html';
     }
 
+    // UPDATED: scroll handler checks screen width before applying desktop padding
     window.addEventListener('scroll', function() {
       const nav = document.querySelector('nav');
+      const isMobile = window.innerWidth <= 768;
       if (window.scrollY > 50) {
-        nav.style.padding = '15px 60px';
+        nav.style.padding = isMobile ? '12px 16px' : '15px 60px';
         nav.style.boxShadow = '0 4px 25px rgba(0, 0, 0, 0.12)';
       } else {
-        nav.style.padding = '20px 60px';
+        nav.style.padding = isMobile ? '15px 20px' : '20px 60px';
         nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.08)';
       }
+    });
+
+    // UPDATED: hamburger toggles mobile nav and auth buttons
+    document.getElementById('hamburger').addEventListener('click', function() {
+      const menu = document.getElementById('navMenu');
+      const auth = document.getElementById('authButtons');
+      menu.classList.toggle('mobile-open');
+      auth.classList.toggle('mobile-open');
+      this.textContent = menu.classList.contains('mobile-open') ? '✕' : '☰';
     });
   </script>
 </body>
