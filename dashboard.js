@@ -1,10 +1,3 @@
-// ✅ Supabase setup — ALWAYS FIRST
-const { createClient } = supabase
-const client = createClient(
-  'https://tiyapgnehlwbhhzqqumq.supabase.co',
-  'sb_publishable_TshJnLexCo4FrHe_YJ8l7g_QcxA_kaV'
-)
-
 async function checkAuth() {
   const { data: { user } } = await client.auth.getUser()
   if (!user) {
@@ -49,10 +42,7 @@ function setupMobileMenu() {
   const sidebar = document.getElementById('sidebar');
 
   if (menuToggle && sidebar) {
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-    });
-
+    
     document.addEventListener('click', function(e) {
       if (window.innerWidth <= 768) {
         if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
@@ -81,7 +71,7 @@ function setupNavigation() {
 
   navItems.forEach(link => {
     link.addEventListener('click', function() {
-      // ✅ Don't interfere with logout button
+      // don't/doesn't(? idk basic english now) interfere with logout button
       if (this.classList.contains('logout-btn')) return;
 
       navItems.forEach(nav => nav.classList.remove('active'));
@@ -143,16 +133,6 @@ function animateProgressBars() {
   });
 }
 
-function setupNotifications() {
-  const notificationBtn = document.querySelector('.notification-btn');
-
-  if (notificationBtn) {
-    notificationBtn.addEventListener('click', function() {
-      alert('Notifications:\n\n• New lesson available in Web Development\n• Assignment due in 3 days\n• You earned a new badge!');
-    });
-  }
-}
-
 function setupUserMenu() {
   const userMenu = document.querySelector('.user-menu');
 
@@ -168,7 +148,7 @@ function updateDateTime() {
   console.log('Dashboard loaded at:', now.toLocaleString());
 }
 
-// ✅ Initialize everything when DOM is loaded
+// DOM
 document.addEventListener('DOMContentLoaded', async function() {
   await initDashboard();
   setupMobileMenu();
@@ -176,7 +156,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   setupNavigation();
   setupCourseButtons();
   setupActionButtons();
-  setupNotifications();
   setupUserMenu();
   animateStats();
   animateProgressBars();
