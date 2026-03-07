@@ -8,7 +8,6 @@
   <title>UpLift — Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
 
-  <!-- ADDED: notification dropdown styles -->
   <style>
     .notification-wrapper {
       position: relative;
@@ -70,7 +69,6 @@
     }
 
     .notif-item:hover { background: #f7f8fc; }
-
     .notif-item.unread { background: #f0f2ff; }
     .notif-item.unread:hover { background: #e8ecff; }
 
@@ -85,44 +83,35 @@
 
     .notif-item.read .notif-dot { background: transparent; }
 
-    .notif-message {
-      font-size: 13px;
-      color: #2c3e50;
-      line-height: 1.4;
-    }
+    .notif-message { font-size: 13px; color: #2c3e50; line-height: 1.4; }
+    .notif-time { font-size: 11px; color: #aab0be; margin-top: 3px; }
 
-    .notif-time {
-      font-size: 11px;
-      color: #aab0be;
-      margin-top: 3px;
-    }
+    .notif-empty { padding: 28px; text-align: center; color: #aab0be; font-size: 13px; }
 
-    .notif-empty {
-      padding: 28px;
-      text-align: center;
-      color: #aab0be;
-      font-size: 13px;
-    }
-
-    [data-theme="dark"] .notification-dropdown {
-      background: #1c1f29;
-      border-color: #2a2d3e;
-    }
+    [data-theme="dark"] .notification-dropdown { background: #1c1f29; border-color: #2a2d3e; }
     [data-theme="dark"] .notif-header { color: #f0f0f0; border-color: #2a2d3e; }
     [data-theme="dark"] .notif-item { border-color: #2a2d3e; }
     [data-theme="dark"] .notif-item.unread { background: #1e2238; }
     [data-theme="dark"] .notif-item:hover { background: #252840; }
     [data-theme="dark"] .notif-message { color: #f0f0f0; }
+
+    /* UPDATED: make notification dropdown not overflow off screen on mobile */
+    @media (max-width: 480px) {
+      .notification-dropdown {
+        width: 280px;
+        right: -60px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- top navigation -->
   <nav class="top-nav">
     <div class="nav-left">
       <button class="menu-toggle" id="menuToggle">☰</button>
       <div class="logo">Up<span>Lift</span></div>
     </div>
+    <!-- UPDATED: hide search bar on very small screens via dashboard.css or inline below -->
     <div class="nav-center">
       <div class="search-bar">
         <input type="text" placeholder="Search courses, lessons...">
@@ -132,15 +121,12 @@
     <div class="nav-right">
       <button class="theme-toggle-btn" onclick="toggleTheme()">🌑</button>
 
-      <!-- ADDED: wrapped in .notification-wrapper for dropdown positioning -->
       <div class="notification-wrapper">
         <button class="notification-btn" id="notificationBtn">
           <span class="icon">🔔</span>
-          <!-- ADDED: id so JS can update the count -->
           <span class="badge" id="notifBadge" style="display:none;">0</span>
         </button>
 
-        <!-- ADDED: dropdown panel -->
         <div class="notification-dropdown" id="notificationDropdown">
           <div class="notif-header">
             <span>Notifications</span>
@@ -160,38 +146,26 @@
     </div>
   </nav>
 
-  <!-- dashboard layout -->
   <div class="dashboard-container">
 
-    <!-- sidebar -->
     <aside class="sidebar" id="sidebar">
       <nav class="sidebar-nav">
         <a href="#" class="nav-item active">
           <span class="nav-text">Home</span>
         </a>
         <div class="sidebar-divider"></div>
-
-        <!-- .... -->
         <a href="#" class="nav-item">
           <span class="nav-text">Courses</span>
         </a>
-
-        <!-- .... -->
         <a href="#" class="nav-item">
           <span class="nav-text">Deadlines</span>
         </a>
-
-        <!-- .... -->
         <a href="#" class="nav-item active">
           <span class="nav-text">Progress</span>
         </a>
-
-        <!-- .... -->
-         <a href="#" class="nav-item">
+        <a href="#" class="nav-item">
           <span class="nav-text">Completed</span>
-         </a>
-         
-        <!-- .... -->
+        </a>
         <div class="sidebar-divider"></div>
         <a href="#" class="nav-item logout-btn" id="logoutBtn" onclick="handleLogout(event)">
           <span class="nav-text">Logout</span>
@@ -201,7 +175,6 @@
 
     <main class="main-content" id="mainContent">
 
-      <!-- welcome banner -->
       <section class="welcome-banner">
         <div class="welcome-text">
           <h1 id="welcomeTitle">Welcome back! 👋</h1>
@@ -210,7 +183,6 @@
         <button class="btn-primary">Get Started</button>
       </section>
 
-      <!-- stats -->
       <div class="stats-grid">
         <div class="stat-card blue">
           <div class="stat-icon-wrap">
@@ -234,10 +206,8 @@
         </div>
       </div>
 
-      <!-- content Grid -->
       <div class="content-grid">
 
-        <!-- the courses -->
         <section class="dashboard-section">
           <div class="section-header">
             <h2>My Courses</h2>
@@ -265,7 +235,6 @@
           </div>
         </section>
 
-        <!-- Deadlines -->
         <section class="dashboard-section">
           <div class="section-header">
             <h2>Upcoming Deadlines</h2>
@@ -290,7 +259,6 @@
   </div>
 
   <script>
-    // dark mode
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
@@ -305,6 +273,7 @@
       document.querySelector('.theme-toggle-btn').textContent = savedTheme === 'dark' ? '☀️' : '🌑';
     }
 
+    // UPDATED: sidebar toggle checks screen size to decide between mobile overlay and desktop collapse
     document.getElementById('menuToggle').addEventListener('click', () => {
       const sidebar = document.getElementById('sidebar');
       const mainContent = document.getElementById('mainContent');
@@ -317,14 +286,22 @@
       }
     });
 
-    // Supabase setup
+    // UPDATED: close sidebar when clicking outside of it on mobile
+    document.addEventListener('click', (e) => {
+      const sidebar = document.getElementById('sidebar');
+      const menuToggle = document.getElementById('menuToggle');
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile && sidebar.classList.contains('mobile-open') && !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.remove('mobile-open');
+      }
+    });
+
     const { createClient } = supabase;
     const client = createClient(
       'https://tiyapgnehlwbhhzqqumq.supabase.co',
       'sb_publishable_TshJnLexCo4FrHe_YJ8l7g_QcxA_kaV'
     );
 
-    // auth guard + init notifications after user is confirmed
     window.addEventListener('DOMContentLoaded', async () => {
       const { data: { user } } = await client.auth.getUser();
       if (!user || !user.email_confirmed_at) {
@@ -336,17 +313,10 @@
       document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
       document.getElementById('welcomeTitle').textContent = 'Welcome back, ' + username + '! 👋';
 
-      // ============================================
-      // ADDED: load notifications and start realtime
-      // ============================================
       await loadNotifications(user.id);
       subscribeToNotifications(user.id);
     });
 
-    // ============================================
-    // ADDED: fetch notifications from Supabase
-    // and render them in the dropdown
-    // ============================================
     async function loadNotifications(userId) {
       const { data, error } = await client
         .from('notifications')
@@ -358,15 +328,11 @@
       renderNotifications(data);
     }
 
-    // ============================================
-    // ADDED: render notifications list + badge count
-    // ============================================
     function renderNotifications(notifications) {
       const list = document.getElementById('notifList');
       const badge = document.getElementById('notifBadge');
       const unreadCount = notifications.filter(n => !n.is_read).length;
 
-      // update badge
       if (unreadCount > 0) {
         badge.textContent = unreadCount;
         badge.style.display = 'inline-block';
@@ -374,7 +340,6 @@
         badge.style.display = 'none';
       }
 
-      // render list
       if (notifications.length === 0) {
         list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
         return;
@@ -391,56 +356,27 @@
       `).join('');
     }
 
-    // ============================================
-    // ADDED: mark a single notification as read
-    // ============================================
     async function markAsRead(notifId) {
-      await client
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('id', notifId);
-
-      // re-fetch to update UI
+      await client.from('notifications').update({ is_read: true }).eq('id', notifId);
       const { data: { user } } = await client.auth.getUser();
       if (user) await loadNotifications(user.id);
     }
 
-    // ============================================
-    // ADDED: mark all notifications as read
-    // ============================================
     document.getElementById('markAllRead').addEventListener('click', async () => {
       const { data: { user } } = await client.auth.getUser();
       if (!user) return;
-      await client
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('user_id', user.id)
-        .eq('is_read', false);
+      await client.from('notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false);
       await loadNotifications(user.id);
     });
 
-    // ============================================
-    // ADDED: realtime listener — badge updates
-    // instantly when a new notification is inserted
-    // ============================================
     function subscribeToNotifications(userId) {
       client
         .channel('notifications-channel')
-        .on('postgres_changes', {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notifications',
-          filter: `user_id=eq.${userId}`
-        }, async () => {
-          await loadNotifications(userId);
-        })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
+          async () => { await loadNotifications(userId); })
         .subscribe();
     }
 
-    // ============================================
-    // ADDED: toggle dropdown open/close on bell click
-    // closes if you click anywhere else on the page
-    // ============================================
     document.getElementById('notificationBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       document.getElementById('notificationDropdown').classList.toggle('open');
@@ -454,9 +390,6 @@
       e.stopPropagation();
     });
 
-    // ============================================
-    // ADDED: helper to show "2 minutes ago" etc.
-    // ============================================
     function timeAgo(dateStr) {
       const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
       if (diff < 60) return 'just now';
@@ -465,7 +398,6 @@
       return `${Math.floor(diff / 86400)}d ago`;
     }
 
-    // Logout
     async function handleLogout(e) {
       e.preventDefault();
       await client.auth.signOut();
