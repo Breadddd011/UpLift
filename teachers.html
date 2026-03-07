@@ -6,346 +6,171 @@
   <link rel="icon" type="image/jpg" href="logo.jpg">
   <title>Teachers - UpLift</title>
   <style>
-  * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  min-height: 100vh;
-  background: #f5f5f5;
-  overflow-x: hidden;
-}
-
-/* Navigation */
-nav {
-  padding: 20px 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-}
-
-.logo {
-  font-size: 28px;
-  font-weight: 800;
-  color: #2c3e50;
-  cursor: pointer;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 30px;
-}
-
-nav a {
-  color: #555;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 10px 20px;
-  border-radius: 25px;
-  transition: all 0.3s;
-  font-weight: 600;
-}
-
-nav a:hover {
-  background: #2c3e50;
-  color: white;
-  transform: translateY(-2px);
-}
-
-nav a.active {
-  background: #2c3e50;
-  color: white;
-}
-
-.auth-buttons {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.login-btn, .signup-btn {
-  padding: 10px 24px;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  border: 2px solid #2c3e50;
-  text-decoration: none;
-}
-
-.login-btn {
-  background: transparent;
-  color: #2c3e50;
-}
-
-.login-btn:hover {
-  background: #2c3e50;
-  color: white;
-}
-
-.signup-btn {
-  background: #2c3e50;
-  color: white;
-}
-
-.signup-btn:hover {
-  background: #1a252f;
-  transform: translateY(-2px);
-}
-
-/* Page Header */
-.page-header {
-  position: relative;
-  color: white;
-  text-align: center;
-  padding: 140px 40px 80px;
-  margin-top: 0;
-  background-image: url('https://static.vecteezy.com/system/resources/thumbnails/049/218/535/small_2x/an-empty-classroom-with-rows-of-desks-and-chairs-photo.jpeg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.page-header::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(52, 73, 94, 0.75));
-  z-index: 1;
-}
-
-.page-header-content {
-  position: relative;
-  z-index: 2;
-}
-
-.page-header h1 {
-  font-size: 56px;
-  font-weight: 900;
-  margin-bottom: 20px;
-  animation: fadeInUp 0.8s ease;
-}
-
-.page-header p {
-  font-size: 20px;
-  opacity: 0.9;
-  max-width: 700px;
-  margin: 0 auto;
-  animation: fadeInUp 1s ease;
-}
-
-/* Teachers Grid */
-.teachers-container {
-  max-width: 1300px;
-  margin: 80px auto;
-  padding: 0 40px;
-}
-
-.teachers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 35px;
-}
-
-.teacher-card {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  animation: fadeInUp 0.6s ease both;
-}
-
-.teacher-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* Stagger teacher cards */
-.teacher-card:nth-child(1) { animation-delay: 0.05s; }
-.teacher-card:nth-child(2) { animation-delay: 0.1s; }
-.teacher-card:nth-child(3) { animation-delay: 0.15s; }
-.teacher-card:nth-child(4) { animation-delay: 0.2s; }
-.teacher-card:nth-child(5) { animation-delay: 0.25s; }
-.teacher-card:nth-child(6) { animation-delay: 0.3s; }
-
-.teacher-image {
-  width: 100%;
-  height: 280px;
-  position: relative;
-  overflow: hidden;
-}
-
-.teacher-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-  transition: transform 0.5s ease;
-}
-
-.teacher-card:hover .teacher-image img {
-  transform: scale(1.05);
-}
-
-.teacher-badge {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #2c3e50;
-  z-index: 2;
-}
-
-.teacher-content {
-  padding: 30px;
-}
-
-.teacher-card h3 {
-  font-size: 26px;
-  margin-bottom: 8px;
-  font-weight: 800;
-  color: #2c3e50;
-}
-
-.teacher-title {
-  font-size: 15px;
-  color: #3498db;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.teacher-card p {
-  font-size: 15px;
-  color: #7f8c8d;
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-.teacher-stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #ecf0f1;
-}
-
-.stat {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 800;
-  color: #2c3e50;
-  display: block;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: #95a5a6;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.subjects {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.subject-tag {
-  background: #ecf0f1;
-  color: #2c3e50;
-  padding: 6px 12px;
-  border-radius: 15px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.contact-btn {
-  width: 100%;
-  padding: 12px;
-  background: #2c3e50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-size: 14px;
-}
-
-.contact-btn:hover {
-  background: #1a252f;
-  transform: translateY(-2px);
-}
-
-/* Footer */
-footer {
-  background: #2c3e50;
-  color: white;
-  text-align: center;
-  padding: 40px 20px;
-  margin-top: 80px;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
+    background: #f5f5f5;
+    overflow-x: hidden;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-/* Responsive */
-@media (max-width: 768px) {
   nav {
-    padding: 15px 20px;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
   }
 
-  nav ul {
-    display: none;
+  .logo { font-size: 28px; font-weight: 800; color: #2c3e50; cursor: pointer; }
+
+  nav ul { list-style: none; display: flex; gap: 30px; }
+
+  nav a {
+    color: #555; text-decoration: none; font-size: 16px;
+    padding: 10px 20px; border-radius: 25px; transition: all 0.3s; font-weight: 600;
   }
 
-  .page-header h1 {
-    font-size: 38px;
+  nav a:hover { background: #2c3e50; color: white; transform: translateY(-2px); }
+  nav a.active { background: #2c3e50; color: white; }
+
+  .auth-buttons { display: flex; gap: 15px; align-items: center; }
+
+  .login-btn, .signup-btn {
+    padding: 10px 24px; border-radius: 25px; font-size: 16px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s; border: 2px solid #2c3e50; text-decoration: none;
   }
+
+  .login-btn { background: transparent; color: #2c3e50; }
+  .login-btn:hover { background: #2c3e50; color: white; }
+  .signup-btn { background: #2c3e50; color: white; }
+  .signup-btn:hover { background: #1a252f; transform: translateY(-2px); }
+
+  /* UPDATED: hamburger button */
+  .hamburger {
+    display: none; background: none; border: none; font-size: 26px;
+    cursor: pointer; color: #2c3e50; padding: 4px 8px; line-height: 1;
+  }
+
+  .page-header {
+    position: relative; color: white; text-align: center;
+    padding: 140px 40px 80px; margin-top: 0;
+    background-image: url('https://static.vecteezy.com/system/resources/thumbnails/049/218/535/small_2x/an-empty-classroom-with-rows-of-desks-and-chairs-photo.jpeg');
+    background-size: cover; background-position: center;
+    /* UPDATED: scroll instead of fixed for iOS Safari */
+    background-attachment: scroll;
+    min-height: 400px; display: flex; align-items: center; justify-content: center;
+  }
+
+  .page-header::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(52, 73, 94, 0.75));
+    z-index: 1;
+  }
+
+  .page-header-content { position: relative; z-index: 2; }
+
+  .page-header h1 { font-size: 56px; font-weight: 900; margin-bottom: 20px; animation: fadeInUp 0.8s ease; }
+  .page-header p { font-size: 20px; opacity: 0.9; max-width: 700px; margin: 0 auto; animation: fadeInUp 1s ease; }
+
+  .teachers-container { max-width: 1300px; margin: 80px auto; padding: 0 40px; }
 
   .teachers-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 35px;
   }
-}
+
+  .teacher-card {
+    background: white; border-radius: 15px; overflow: hidden;
+    transition: all 0.3s ease; cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); animation: fadeInUp 0.6s ease both;
+  }
+
+  .teacher-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); }
+
+  .teacher-card:nth-child(1) { animation-delay: 0.05s; }
+  .teacher-card:nth-child(2) { animation-delay: 0.1s; }
+  .teacher-card:nth-child(3) { animation-delay: 0.15s; }
+  .teacher-card:nth-child(4) { animation-delay: 0.2s; }
+  .teacher-card:nth-child(5) { animation-delay: 0.25s; }
+  .teacher-card:nth-child(6) { animation-delay: 0.3s; }
+
+  .teacher-image { width: 100%; height: 280px; position: relative; overflow: hidden; }
+  .teacher-image img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.5s ease; }
+  .teacher-card:hover .teacher-image img { transform: scale(1.05); }
+
+  .teacher-badge {
+    position: absolute; top: 15px; right: 15px;
+    background: rgba(255, 255, 255, 0.95); padding: 8px 16px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; color: #2c3e50; z-index: 2;
+  }
+
+  .teacher-content { padding: 30px; }
+  .teacher-card h3 { font-size: 26px; margin-bottom: 8px; font-weight: 800; color: #2c3e50; }
+  .teacher-title { font-size: 15px; color: #3498db; font-weight: 700; margin-bottom: 15px; }
+  .teacher-card p { font-size: 15px; color: #7f8c8d; margin-bottom: 20px; line-height: 1.6; }
+
+  .teacher-stats {
+    display: flex; justify-content: space-between; margin-bottom: 20px;
+    padding-bottom: 20px; border-bottom: 2px solid #ecf0f1;
+  }
+
+  .stat { text-align: center; }
+  .stat-value { font-size: 24px; font-weight: 800; color: #2c3e50; display: block; }
+  .stat-label { font-size: 12px; color: #95a5a6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .subjects { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .subject-tag { background: #ecf0f1; color: #2c3e50; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 700; }
+
+  .contact-btn {
+    width: 100%; padding: 12px; background: #2c3e50; color: white; border: none;
+    border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 14px;
+  }
+  .contact-btn:hover { background: #1a252f; transform: translateY(-2px); }
+
+  footer { background: #2c3e50; color: white; text-align: center; padding: 40px 20px; margin-top: 80px; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* UPDATED: full mobile responsive block */
+  @media (max-width: 768px) {
+    nav { padding: 15px 20px; flex-wrap: wrap; }
+
+    /* UPDATED: show hamburger, hide desktop nav */
+    .hamburger { display: block; }
+
+    nav ul {
+      display: none; width: 100%; flex-direction: column;
+      gap: 8px; padding: 10px 0 5px; order: 3;
+    }
+
+    nav ul.mobile-open { display: flex; }
+    nav ul li a { display: block; padding: 10px 16px; border-radius: 10px; }
+
+    .auth-buttons { display: none; width: 100%; justify-content: center; gap: 10px; order: 4; padding-bottom: 10px; }
+    .auth-buttons.mobile-open { display: flex; }
+
+    /* UPDATED: smaller header text */
+    .page-header { padding: 110px 20px 60px; }
+    .page-header h1 { font-size: 32px; }
+    .page-header p { font-size: 16px; }
+
+    /* UPDATED: single column on mobile */
+    .teachers-grid { grid-template-columns: 1fr; }
+
+    .teachers-container { padding: 0 16px; margin: 40px auto; }
+  }
   </style>
 </head>
 <body>
@@ -358,10 +183,12 @@ footer {
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <div class="auth-buttons">
+    <div class="auth-buttons" id="authButtons">
       <a href="index.html" class="login-btn">Log In</a>
       <a href="index.html" class="signup-btn">Sign Up</a>
     </div>
+    <!-- UPDATED: hamburger button for mobile nav -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
   </nav>
 
   <div class="page-header">
@@ -374,7 +201,6 @@ footer {
   <div class="teachers-container">
     <div class="teachers-grid">
 
-      <!-- loydd Morts-->
       <div class="teacher-card">
         <div class="teacher-image">
           <img src="https://images.pexels.com/photos/31419914/pexels-photo-31419914.jpeg?cs=srgb&dl=pexels-optical-chemist-340351297-31419914.jpg&fm=jpg" alt="Prof. Lloydd Morata">
@@ -398,7 +224,6 @@ footer {
         </div>
       </div>
 
-      <!-- Tien-->
       <div class="teacher-card">
         <div class="teacher-image">
           <img src="https://tse3.mm.bing.net/th/id/OIP.lKaq64QrjBXZXktAogXXqwHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Prof. Christien Zapanta">
@@ -422,10 +247,9 @@ footer {
         </div>
       </div>
 
-      <!-- Angelica -->
       <div class="teacher-card">
         <div class="teacher-image">
-          <img src="https://wallpapercave.com/wp/wp6542578.jpg">
+          <img src="https://wallpapercave.com/wp/wp6542578.jpg" alt="Ms. Angelica Maderazo">
           <span class="teacher-badge">⭐ 4.9</span>
         </div>
         <div class="teacher-content">
@@ -446,7 +270,6 @@ footer {
         </div>
       </div>
 
-      <!-- Alden-->
       <div class="teacher-card">
         <div class="teacher-image">
           <img src="https://tse2.mm.bing.net/th/id/OIP.NZ93H9csIK4eKPzmUVNbdgHaE9?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Dr. Alden Gaac">
@@ -470,7 +293,6 @@ footer {
         </div>
       </div>
 
-      <!-- Alona -->
       <div class="teacher-card">
         <div class="teacher-image">
           <img src="https://images.pexels.com/photos/13912779/pexels-photo-13912779.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Prof. Rose Ann Enano">
@@ -490,11 +312,10 @@ footer {
             <span class="subject-tag">Geography</span>
             <span class="subject-tag">Civics</span>
           </div>
-          <button class="contact-btn" onclick="contactTeacher('Prof. Alona Tomas')">View Profile</button>
+          <button class="contact-btn" onclick="contactTeacher('Prof. Rose Ann Enano')">View Profile</button>
         </div>
       </div>
 
-      <!-- Louie -->
       <div class="teacher-card">
         <div class="teacher-image">
           <img src="https://tse2.mm.bing.net/th/id/OIP.hVzdTDektrtZU2h8g2nAPwHaE9?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Mr. Louie Fraginal">
@@ -531,15 +352,26 @@ footer {
       window.location.href = 'index.html';
     }
 
+    // UPDATED: scroll handler checks screen width before applying desktop padding
     window.addEventListener('scroll', function() {
       const nav = document.querySelector('nav');
+      const isMobile = window.innerWidth <= 768;
       if (window.scrollY > 50) {
-        nav.style.padding = '15px 60px';
+        nav.style.padding = isMobile ? '12px 16px' : '15px 60px';
         nav.style.boxShadow = '0 4px 25px rgba(0, 0, 0, 0.12)';
       } else {
-        nav.style.padding = '20px 60px';
+        nav.style.padding = isMobile ? '15px 20px' : '20px 60px';
         nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.08)';
       }
+    });
+
+    // UPDATED: hamburger toggles mobile nav menu and auth buttons
+    document.getElementById('hamburger').addEventListener('click', function() {
+      const menu = document.getElementById('navMenu');
+      const auth = document.getElementById('authButtons');
+      menu.classList.toggle('mobile-open');
+      auth.classList.toggle('mobile-open');
+      this.textContent = menu.classList.contains('mobile-open') ? '✕' : '☰';
     });
   </script>
 </body>
