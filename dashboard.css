@@ -191,17 +191,10 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-
-  /* ============================================
-     ADDED: smooth open/close transition
-     ============================================ */
   transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease;
   overflow: hidden;
 }
 
-/* ============================================
-   ADDED: collapsed state for desktop sidebar
-   ============================================ */
 .sidebar.collapsed {
   width: 0;
   padding: 24px 0;
@@ -225,7 +218,7 @@ body {
   font-weight: 600;
   font-size: 15px;
   transition: all 0.2s;
-  white-space: nowrap; /* =====  ADDED: prevent text wrapping while closing ===== */
+  white-space: nowrap;
 }
 
 .nav-item:hover {
@@ -266,7 +259,7 @@ body {
   margin-left: 240px;
   padding: 32px;
   transition: margin-left 0.3s ease, max-width 0.3s ease;
-  max-width: calc(100% - 240px);  /* ==== ADDED: prevent content from stretching too wide ===== */
+  max-width: calc(100% - 240px);
   width: 100%;
 }
 
@@ -313,7 +306,6 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* ---- this part doesn't even work so... ---- */
 @keyframes marquee {
   0%   { transform: translateX(60%); }
   100% { transform: translateX(-100%); }
@@ -705,37 +697,87 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* UPDATED: tighter nav padding on mobile */
   .top-nav { padding: 0 16px; }
+
+  /* UPDATED: hide search bar on mobile to save nav space */
   .nav-center { display: none; }
+
+  /* UPDATED: hide username text on mobile, keep avatar only */
+  .user-name, .dropdown-arrow { display: none; }
+  .user-menu { padding: 4px; border-radius: 50%; }
+
+  /* UPDATED: sidebar slides in as overlay on mobile instead of pushing content */
   .sidebar {
     transform: translateX(-100%);
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
     z-index: 900;
+    width: 240px;
+    /* UPDATED: sidebar needs a shadow so it lifts above content when open */
+    box-shadow: none;
   }
-  .sidebar.mobile-open { transform: translateX(0); }
-  .main-content { margin-left: 0; padding: 16px; }
-  .welcome-banner { flex-direction: column; gap: 16px; padding: 24px 20px; }
-  .marquee-wrapper h1 { font-size: 22px; }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  /* UPDATED: content fills full width on mobile since sidebar overlays */
+  .main-content {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  /* UPDATED: stack welcome banner vertically on mobile */
+  .welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 20px;
+  }
+
+  /* UPDATED: smaller welcome title on mobile */
+  .welcome-text h1 { font-size: 20px; }
   .welcome-banner::after { display: none; }
+
+  /* UPDATED: make Get Started button full width on mobile */
+  .btn-primary { width: 100%; text-align: center; }
+
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  /* UPDATED: stack course item vertically on mobile */
   .course-item { flex-direction: column; align-items: flex-start; }
   .btn-continue { width: 100%; text-align: center; }
 
-  /* ================== ADDED: disable desktop collapse on mobile ======================= */
+  /* UPDATED: prevent desktop collapse from firing on mobile */
   .sidebar.collapsed {
     width: 240px;
     padding: 24px 12px;
+    transform: translateX(-100%);
   }
+
+  /* UPDATED: sidebar-closed has no effect on mobile (sidebar is overlay) */
   .main-content.sidebar-closed {
     margin-left: 0;
+    max-width: 100%;
+  }
+
+  /* UPDATED: deadline badge wraps below on small screens */
+  .deadline-item {
+    flex-wrap: wrap;
+    gap: 10px;
   }
 }
 
+/* UPDATED: single column stats on very small phones */
 @media (max-width: 400px) {
   .stats-grid { grid-template-columns: 1fr; }
+  /* UPDATED: tighten nav gap so items don't overflow on tiny screens */
+  .nav-right { gap: 8px; }
 }
 
-/* ===== DARK MODE (not done yet) ===== */
+/* ===== DARK MODE ===== */
 [data-theme="dark"] {
   --bg-main: #0f1117;
   --bg-card: #1c1f29;
@@ -754,12 +796,25 @@ body {
 [data-theme="dark"] .nav-item { color: var(--text-secondary); }
 [data-theme="dark"] .search-bar input { background: #1a1d27; color: var(--text-primary); border-color: var(--border-color); }
 
-/* smooth transition when turning the dark mode on */
-body, .top-nav, .stat-card, .dashboard-section, .welcome-banner {
-  transition: background 0.3s, color 0.3s;
+/* UPDATED: dark mode also styles course/deadline items */
+[data-theme="dark"] .course-item { background: #1a1d27; border-color: var(--border-color); }
+[data-theme="dark"] .deadline-item { background: #1a1d27; border-color: var(--border-color); }
+[data-theme="dark"] .deadline-date { background: #13151f; border-color: var(--border-color); }
+[data-theme="dark"] .section-header h2,
+[data-theme="dark"] .course-details h3,
+[data-theme="dark"] .deadline-info h4,
+[data-theme="dark"] .stat-number,
+[data-theme="dark"] .deadline-date .day { color: var(--text-primary); }
+[data-theme="dark"] .user-name { color: var(--text-primary); }
+[data-theme="dark"] .user-menu { background: #1a1d27; border-color: var(--border-color); }
+[data-theme="dark"] .notification-btn { background: #1a1d27; border-color: var(--border-color); }
+
+/* smooth transition when switching dark mode */
+body, .top-nav, .stat-card, .dashboard-section, .welcome-banner,
+.course-item, .deadline-item, .sidebar {
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 
-/* toggle button 🌑 */
 .theme-toggle-btn {
   background: none;
   border: none;
