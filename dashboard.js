@@ -133,16 +133,6 @@ function animateProgressBars() {
   });
 }
 
-function setupUserMenu() {
-  const userMenu = document.querySelector('.user-menu');
-
-  if (userMenu) {
-    userMenu.addEventListener('click', function() {
-      alert('User menu options:\n\n• Profile\n• Account Settings\n• Help & Support\n• Logout');
-    });
-  }
-}
-
 function updateDateTime() {
   const now = new Date();
   console.log('Dashboard loaded at:', now.toLocaleString());
