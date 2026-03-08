@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/jpg" href="logo2.png">
+  <title>My Profile — UpLift</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+
+    .profile-hero {
+      background: linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);
+      border-radius: 20px;
+      padding: 36px 40px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(44,62,80,0.25);
+      animation: fadeInUp 0.4s ease;
+    }
+
+    .profile-hero::after {
+      content: '🏫';
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 90px;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+
+    /* ── avatar ── */
+    .profile-avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .profile-avatar-large {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 38px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid rgba(255,255,255,0.3);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ADDED: camera overlay on hover */
+    .profile-avatar-wrap:hover .avatar-overlay {
+      opacity: 1;
+    }
+
+    .avatar-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    #avatarInput { display: none; }
+
+    .profile-hero-info { flex: 1; min-width: 0; }
+
+    .profile-hero-info h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .profile-hero-email {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 10px;
+    }
+
+    .profile-save-status {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      min-height: 20px;
+      display: block;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .profile-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid #e8ecf0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      animation: fadeInUp 0.5s ease both;
+    }
+
+    .profile-card:nth-child(1) { animation-delay: 0.05s; }
+    .profile-card:nth-child(2) { animation-delay: 0.1s; }
+    .profile-card:nth-child(3) { animation-delay: 0.15s; }
+
+    .profile-card-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f0f2f8;
+    }
+
+    .profile-field { margin-bottom: 18px; }
+
+    .profile-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #5a6478;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .profile-input,
+    .profile-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e8ecf0;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #2c3e50;
+      background: #f7f8fc;
+      transition: all 0.2s;
+      resize: none;
+    }
+
+    .profile-input:focus,
+    .profile-textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
+    .profile-save-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #2c3e50, #7389f6);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+
+    .profile-save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(102,126,234,0.4);
+    }
+
+    .profile-save-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Badges ── */
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .badge-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 8px;
+      border-radius: 12px;
+      background: #f0f2f8;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      opacity: 0.35;
+      filter: grayscale(1);
+    }
+
+    /* ADDED: earned badges */
+    .badge-item.earned {
+      opacity: 1;
+      filter: none;
+      background: linear-gradient(135deg, #eef0ff, #f5f0ff);
+      border-color: #667eea30;
+    }
+
+    .badge-item.earned:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(102,126,234,0.2);
+      border-color: #667eea60;
+    }
+
+    .badge-icon { font-size: 30px; }
+
+    .badge-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #5a6478;
+      text-align: center;
+    }
+
+    .badge-item.earned .badge-label { color: #667eea; }
+
+    /* ── courses progress ── */
+    .profile-courses { display: flex; flex-direction: column; gap: 16px; }
+
+    .profile-course-item { display: flex; flex-direction: column; gap: 6px; }
+
+    .profile-course-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .profile-course-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+
+    .profile-course-pct {
+      font-size: 13px;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    /* reuse progress bar from dashboard.css */
+    .profile-course-item .progress-bar { height: 8px; }
+
+    /* ── Dark mode support ── */
+    [data-theme="dark"] .profile-card {
+      background: #1c1f29;
+      border-color: #2a2d3e;
+    }
+    [data-theme="dark"] .profile-card-title { color: #f0f0f0; border-color: #2a2d3e; }
+    [data-theme="dark"] .profile-field label { color: #a0a0b0; }
+    [data-theme="dark"] .profile-input,
+    [data-theme="dark"] .profile-textarea {
+      background: #13151f;
+      border-color: #2a2d3e;
+      color: #f0f0f0;
+    }
+    [data-theme="dark"] .profile-input:focus,
+    [data-theme="dark"] .profile-textarea:focus {
+      background: #1a1d27;
+      border-color: #667eea;
+    }
+    [data-theme="dark"] .badge-item { background: #13151f; }
+    [data-theme="dark"] .badge-item.earned { background: #1e2238; border-color: #667eea40; }
+    [data-theme="dark"] .badge-label { color: #a0a0b0; }
+    [data-theme="dark"] .profile-course-name { color: #f0f0f0; }
+    [data-theme="dark"] .profile-hero { box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+
+    @media (max-width: 900px) {
+      .profile-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .profile-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px 20px;
+        gap: 16px;
+      }
+      .profile-hero::after { display: none; }
+      .profile-hero-info h1 { font-size: 20px; }
+      .badges-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 400px) {
+      .badges-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ADDED: user dropdown (same as dashboard) */
+    .user-menu-wrapper { position: relative; }
+    .user-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      width: 240px; background: #fff; border: 1px solid #e8ecf0;
+      border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      z-index: 9999; overflow: hidden; animation: dropdownFadeIn 0.18s ease;
+    }
+    .user-dropdown.open { display: block; }
+    @keyframes dropdownFadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .user-dropdown-header { display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
+    .user-dropdown-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white; font-weight: 700; font-size: 16px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    /* Ps: might get dizzy after staring in here */
+    .user-dropdown-name { font-size: 14px; font-weight: 700; color: #2c3e50; }
+    .user-dropdown-email { font-size: 12px; color: #8a94a6; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 155px; }
+    .user-dropdown-divider { height: 1px; background: #e8ecf0; margin: 4px 0; }
+    .user-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600; color: #2c3e50; text-decoration: none; transition: background 0.15s; }
+    .user-dropdown-item:hover { background: #f0f2f8; color: #667eea; }
+    .user-dropdown-icon { font-size: 16px; }
+    .user-dropdown-logout { color: #ff6b6b; }
+    .user-dropdown-logout:hover { background: #fff0f0; color: #ee5a5a; }
+    [data-theme="dark"] .user-dropdown { background: #1c1f29; border-color: #2a2d3e; }
+    [data-theme="dark"] .user-dropdown-name { color: #f0f0f0; }
+    [data-theme="dark"] .user-dropdown-item { color: #f0f0f0; }
+    [data-theme="dark"] .user-dropdown-item:hover { background: #252840; color: #667eea; }
+    [data-theme="dark"] .user-dropdown-divider { background: #2a2d3e; }
+    [data-theme="dark"] .user-dropdown-logout { color: #ff6b6b; }
+    [data-theme="dark"] .user-dropdown-logout:hover { background: #2a1a1a; }
+    .notification-wrapper { position: relative; }
+    .notification-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      width: 320px; background: #fff; border: 1px solid #e8ecf0;
+      border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      z-index: 9999; overflow: hidden;
+    }
+    .notification-dropdown.open { display: block; }
+    .notif-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid #e8ecf0;
+      font-weight: 700; font-size: 14px; color: #2c3e50;
+    }
+    .notif-mark-all { font-size: 12px; color: #667eea; cursor: pointer; font-weight: 600; background: none; border: none; }
+    .notif-mark-all:hover { text-decoration: underline; }
+    .notif-list { max-height: 280px; overflow-y: auto; }
+    .notif-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 18px; border-bottom: 1px solid #f0f2f8; cursor: pointer; transition: background 0.15s;
+    }
+    .notif-item:hover { background: #f7f8fc; }
+    .notif-item.unread { background: #f0f2ff; }
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #667eea; margin-top: 5px; flex-shrink: 0; }
+    .notif-item.read .notif-dot { background: transparent; }
+    .notif-message { font-size: 13px; color: #2c3e50; line-height: 1.4; }
+    .notif-time { font-size: 11px; color: #aab0be; margin-top: 3px; }
+    .notif-empty { padding: 28px; text-align: center; color: #aab0be; font-size: 13px; }
+    [data-theme="dark"] .notification-dropdown { background: #1c1f29; border-color: #2a2d3e; }
+    [data-theme="dark"] .notif-header { color: #f0f0f0; border-color: #2a2d3e; }
+    [data-theme="dark"] .notif-item { border-color: #2a2d3e; }
+    [data-theme="dark"] .notif-item.unread { background: #1e2238; }
+    [data-theme="dark"] .notif-message { color: #f0f0f0; }
+    @media (max-width: 480px) {
+      .notification-dropdown { width: 280px; right: -60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- same top nav as dashboard -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div class="logo">Up<span>Lift</span></div>
+    </div>
+    <div class="nav-center">
+      <div class="search-bar">
+        <input type="text" placeholder="Search courses, lessons...">
+        <span class="search-icon">🔍</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle-btn" onclick="toggleTheme()">🌑</button>
+      <div class="notification-wrapper">
+        <button class="notification-btn" id="notificationBtn">
+          <span class="icon">🔔</span>
+          <span class="badge" id="notifBadge" style="display:none;">0</span>
+        </button>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <div class="notif-header">
+            <span>Notifications</span>
+            <button class="notif-mark-all" id="markAllRead">Mark all as read</button>
+          </div>
+          <div class="notif-list" id="notifList">
+            <div class="notif-empty">No notifications yet</div>
+          </div>
+        </div>
+      </div>
+      <div class="user-menu-wrapper" id="userMenuWrapper">
+        <div class="user-menu" id="userMenuBtn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="usernameDisplay">User</span>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown-header">
+            <div class="user-dropdown-avatar" id="userDropdownAvatar">?</div>
+            <div>
+              <div class="user-dropdown-name" id="userDropdownName">User</div>
+              <div class="user-dropdown-email" id="userDropdownEmail"></div>
+            </div>
+          </div>
+          <div class="user-dropdown-divider"></div>
+          <a href="profile.html" class="user-dropdown-item">
+            <span class="user-dropdown-icon">👤</span> Profile
+          </a>
+          <a href="#" class="user-dropdown-item">
+            <span class="user-dropdown-icon">⚙️</span> Account Settings
+          </a>
+          <a href="#" class="user-dropdown-item">
+            <span class="user-dropdown-icon">💬</span> Help &amp; Support
+          </a>
+          <div class="user-dropdown-divider"></div>
+          <a href="#" class="user-dropdown-item user-dropdown-logout" onclick="handleLogout(event)">
+            <span class="user-dropdown-icon">🚪</span> Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dashboard-container">
+
+    <!-- same sidebar as dashboard -->
+    <aside class="sidebar" id="sidebar">
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-text">Home</span>
+        </a>
+        <div class="sidebar-divider"></div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-text">Courses</span>
+        </a>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-text">Deadlines</span>
+        </a>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-text">Progress</span>
+        </a>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-text">Completed</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+
+      <!-- profile hero banner -->
+      <div class="profile-hero">
+        <div class="profile-avatar-wrap">
+          <!-- ADDED: clicking avatar opens file picker -->
+          <div class="profile-avatar-large" id="profileAvatarLarge" onclick="document.getElementById('avatarInput').click()">?</div>
+          <div class="avatar-overlay" onclick="document.getElementById('avatarInput').click()">📷</div>
+          <input type="file" id="avatarInput" accept="image/*">
+        </div>
+        <div class="profile-hero-info">
+          <h1 id="profileName">Loading...</h1>
+          <p class="profile-hero-email" id="profileEmail"></p>
+          <!-- ADDED: shows "Saved!" or error after saving -->
+          <span class="profile-save-status" id="profileSaveStatus"></span>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+
+        <!-- card 1: editable info -->
+        <div class="profile-card">
+          <h2 class="profile-card-title">About Me</h2>
+
+          <div class="profile-field">
+            <label>Display Name</label>
+            <input type="text" id="profileNameInput" placeholder="Enter your display name" class="profile-input">
+          </div>
+
+          <div class="profile-field">
+            <label>Bio</label>
+            <textarea id="profileBioInput" placeholder="Tell us a little about yourself..." class="profile-textarea" rows="5"></textarea>
+          </div>
+
+          <!-- ADDED: save button -->
+          <button class="profile-save-btn" id="saveBtn" onclick="saveProfile()">Save Changes</button>
+        </div>
+
+        <!-- right column: badges + courses stacked -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+          <!-- card 2: badges -->
+          <div class="profile-card">
+            <h2 class="profile-card-title">Badges & Achievements</h2>
+            <div class="badges-grid">
+              <!-- ADDED: earned badges are full color; locked ones appear faded -->
+              <div class="badge-item earned" title="Welcome to UpLift!">
+                <div class="badge-icon">🎓</div>
+                <div class="badge-label">Enrolled</div>
+              </div>
+              <div class="badge-item earned" title="Completed your first lesson">
+                <div class="badge-icon">⭐</div>
+                <div class="badge-label">First Step</div>
+              </div>
+              <div class="badge-item earned" title="7-day study streak">
+                <div class="badge-icon">🔥</div>
+                <div class="badge-label">On Fire</div>
+              </div>
+              <!-- ADDED: locked badges - greyed out until earned -->
+              <div class="badge-item" title="Complete 5 courses to unlock">
+                <div class="badge-icon">🏆</div>
+                <div class="badge-label">Champion</div>
+              </div>
+              <div class="badge-item" title="Score 100% on a quiz to unlock">
+                <div class="badge-icon">💯</div>
+                <div class="badge-label">Perfect</div>
+              </div>
+              <div class="badge-item" title="Help a classmate to unlock">
+                <div class="badge-icon">🤝</div>
+                <div class="badge-label">Helper</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- card 3: enrolled courses -->
+          <div class="profile-card">
+            <h2 class="profile-card-title">Courses Enrolled</h2>
+            <div class="profile-courses">
+              <div class="profile-course-item">
+                <div class="profile-course-info">
+                  <span class="profile-course-name">Health Policy 101</span>
+                  <span class="profile-course-pct">60%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:60%;"></div>
+                </div>
+              </div>
+              <div class="profile-course-item">
+                <div class="profile-course-info">
+                  <span class="profile-course-name">Advanced Calculus</span>
+                  <span class="profile-course-pct">35%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:35%;"></div>
+                </div>
+              </div>
+              <div class="profile-course-item">
+                <div class="profile-course-info">
+                  <span class="profile-course-name">English Literature</span>
+                  <span class="profile-course-pct">100%</span>
+                </div>
+                <div class="progress-bar">
+                  <!-- ADDED: green bar for completed courses -->
+                  <div class="progress-fill" style="width:100%; background:linear-gradient(90deg,#2ecc71,#27ae60);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ── Supabase ──
+    const { createClient } = supabase;
+    const client = createClient(
+      'https://tiyapgnehlwbhhzqqumq.supabase.co',
+      'sb_publishable_TshJnLexCo4FrHe_YJ8l7g_QcxA_kaV'
+    );
+
+    // ── Dark mode ──
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle-btn').textContent = next === 'dark' ? '☀️' : '🌑';
+    }
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.querySelector('.theme-toggle-btn').textContent = savedTheme === 'dark' ? '☀️' : '🌑';
+    }
+
+    // ── Sidebar toggle ──
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        sidebar.classList.toggle('mobile-open');
+      } else {
+        sidebar.classList.toggle('collapsed');
+        document.getElementById('mainContent').classList.toggle('sidebar-closed');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      const sidebar = document.getElementById('sidebar');
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile && sidebar.classList.contains('mobile-open') &&
+          !sidebar.contains(e.target) && e.target !== document.getElementById('menuToggle')) {
+        sidebar.classList.remove('mobile-open');
+      }
+    });
+
+    // ── Auth guard + load profile on page ready ──
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { user } } = await client.auth.getUser();
+      if (!user || !user.email_confirmed_at) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // UPDATED: show a clean name instead of the full email in the nav
+      const storedName = localStorage.getItem('username');
+      const displayName = storedName && !storedName.includes('@')
+        ? storedName
+        : user.email.split('@')[0];
+
+      document.getElementById('usernameDisplay').textContent = displayName;
+      document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+      document.getElementById('profileEmail').textContent = user.email;
+      // ADDED: populate dropdown header
+      document.getElementById('userDropdownName').textContent = displayName;
+      document.getElementById('userDropdownEmail').textContent = user.email;
+      document.getElementById('userDropdownAvatar').textContent = displayName.charAt(0).toUpperCase();
+
+      // load profile from Supabase
+      await loadProfile(user);
+
+      // notifications
+      await loadNotifications(user.id);
+      subscribeToNotifications(user.id);
+    });
+
+    // ── Load profile from Supabase profiles table ──
+    async function loadProfile(user) {
+      const { data, error } = await client
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (data) {
+        // ADDED: fill in name, bio, avatar from saved profile
+        const name = data.username || localStorage.getItem('username') || user.email.split('@')[0];
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('profileNameInput').value = name;
+        document.getElementById('profileBioInput').value = data.bio || '';
+
+        if (data.avatar_url) {
+          // ADDED: show photo if one was saved
+          showAvatarImage(data.avatar_url);
+        } else {
+          document.getElementById('profileAvatarLarge').textContent = name.charAt(0).toUpperCase();
+        }
+      } else {
+        // no profile row yet — show defaults
+        const name = localStorage.getItem('username') || user.email.split('@')[0];
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('profileNameInput').value = name;
+        document.getElementById('profileAvatarLarge').textContent = name.charAt(0).toUpperCase();
+      }
+    }
+
+    // ── Save profile to Supabase ──
+    async function saveProfile() {
+      const btn = document.getElementById('saveBtn');
+      const status = document.getElementById('profileSaveStatus');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const { data: { user } } = await client.auth.getUser();
+      const name = document.getElementById('profileNameInput').value.trim();
+      const bio = document.getElementById('profileBioInput').value.trim();
+
+      // ADDED: upsert so it works whether profile row exists or not
+      const { error } = await client.from('profiles').upsert({
+        id: user.id,
+        username: name,
+        bio: bio,
+        updated_at: new Date().toISOString()
+      });
+
+      if (error) {
+        status.textContent = '❌ Could not save. Try again.';
+      } else {
+        localStorage.setItem('username', name);
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('usernameDisplay').textContent = name;
+        document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
+        status.textContent = '✅ Saved!';
+        setTimeout(() => status.textContent = '', 3000);
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Save Changes';
+    }
+
+    // ── Avatar upload: convert to base64 and save as avatar_url ──
+    document.getElementById('avatarInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // ADDED: limit file size to 2MB
+      if (file.size > 2 * 1024 * 1024) {
+        alert('⚠️ Image too large. Please choose a photo under 2MB.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        const base64 = ev.target.result;
+        showAvatarImage(base64);
+
+        // ADDED: save avatar as base64 string in the profiles table
+        const { data: { user } } = await client.auth.getUser();
+        await client.from('profiles').upsert({
+          id: user.id,
+          avatar_url: base64,
+          updated_at: new Date().toISOString()
+        });
+
+        document.getElementById('profileSaveStatus').textContent = '✅ Photo updated!';
+        setTimeout(() => document.getElementById('profileSaveStatus').textContent = '', 3000);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // ADDED: helper to swap the avatar div to show an <img> instead of a letter
+    function showAvatarImage(src) {
+      const el = document.getElementById('profileAvatarLarge');
+      el.innerHTML = `<img src="${src}" alt="Avatar">`;
+    }
+
+    // ── Notifications (same as dashboard) ──
+    async function loadNotifications(userId) {
+      const { data, error } = await client
+        .from('notifications').select('*').eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      if (error) return;
+      renderNotifications(data);
+    }
+
+    function renderNotifications(notifications) {
+      const list = document.getElementById('notifList');
+      const badge = document.getElementById('notifBadge');
+      const unread = notifications.filter(n => !n.is_read).length;
+      badge.textContent = unread;
+      badge.style.display = unread > 0 ? 'inline-block' : 'none';
+      if (!notifications.length) {
+        list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+        return;
+      }
+      list.innerHTML = notifications.map(n => `
+        <div class="notif-item ${n.is_read ? 'read' : 'unread'}" onclick="markAsRead('${n.id}')">
+          <div class="notif-dot"></div>
+          <div>
+            <div class="notif-message">${n.message}</div>
+            <div class="notif-time">${timeAgo(n.created_at)}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    async function markAsRead(id) {
+      await client.from('notifications').update({ is_read: true }).eq('id', id);
+      const { data: { user } } = await client.auth.getUser();
+      if (user) loadNotifications(user.id);
+    }
+
+    document.getElementById('markAllRead').addEventListener('click', async () => {
+      const { data: { user } } = await client.auth.getUser();
+      if (!user) return;
+      await client.from('notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false);
+      loadNotifications(user.id);
+    });
+
+    function subscribeToNotifications(userId) {
+      client.channel('notif-profile')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
+          () => loadNotifications(userId))
+        .subscribe();
+    }
+
+    document.getElementById('notificationBtn').addEventListener('click', e => {
+      e.stopPropagation();
+      document.getElementById('notificationDropdown').classList.toggle('open');
+      document.getElementById('userDropdown').classList.remove('open');
+    });
+
+    // ADDED: user dropdown toggle
+    document.getElementById('userMenuBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('userDropdown').classList.toggle('open');
+      document.getElementById('notificationDropdown').classList.remove('open');
+    });
+
+    document.addEventListener('click', () => {
+      document.getElementById('notificationDropdown').classList.remove('open');
+      document.getElementById('userDropdown').classList.remove('open');
+    });
+    document.getElementById('notificationDropdown').addEventListener('click', e => e.stopPropagation());
+    document.getElementById('userDropdown').addEventListener('click', e => e.stopPropagation());
+
+    function timeAgo(d) {
+      const s = Math.floor((Date.now() - new Date(d)) / 1000);
+      if (s < 60) return 'just now';
+      if (s < 3600) return `${Math.floor(s/60)}m ago`;
+      if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+      return `${Math.floor(s/86400)}d ago`;
+    }
+
+    async function handleLogout(e) {
+      e.preventDefault();
+      await client.auth.signOut();
+      localStorage.removeItem('username');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
