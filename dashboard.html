@@ -95,7 +95,6 @@
     [data-theme="dark"] .notif-item:hover { background: #252840; }
     [data-theme="dark"] .notif-message { color: #f0f0f0; }
 
-    /* UPDATED: make notification dropdown not overflow off screen on mobile */
     @media (max-width: 480px) {
       .notification-dropdown {
         width: 280px;
@@ -111,7 +110,6 @@
       <button class="menu-toggle" id="menuToggle">☰</button>
       <div class="logo">Up<span>Lift</span></div>
     </div>
-    <!-- UPDATED: hide search bar on very small screens via dashboard.css or inline below -->
     <div class="nav-center">
       <div class="search-bar">
         <input type="text" placeholder="Search courses, lessons...">
@@ -138,10 +136,35 @@
         </div>
       </div>
 
-      <div class="user-menu">
-        <div class="user-avatar" id="userAvatar">T</div>
-        <span class="user-name" id="usernameDisplay">User</span>
-        <span class="dropdown-arrow">▼</span>
+      <div class="user-menu-wrapper" id="userMenuWrapper">
+        <div class="user-menu" id="userMenuBtn">
+          <div class="user-avatar" id="userAvatar">T</div>
+          <span class="user-name" id="usernameDisplay">User</span>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown-header">
+            <div class="user-dropdown-avatar" id="userDropdownAvatar">T</div>
+            <div>
+              <div class="user-dropdown-name" id="userDropdownName">User</div>
+              <div class="user-dropdown-email" id="userDropdownEmail"></div>
+            </div>
+          </div>
+          <div class="user-dropdown-divider"></div>
+          <a href="profile.html" class="user-dropdown-item">
+            <span class="user-dropdown-icon">👤</span> Profile
+          </a>
+          <a href="#" class="user-dropdown-item">
+            <span class="user-dropdown-icon">⚙️</span> Account Settings
+          </a>
+          <a href="#" class="user-dropdown-item">
+            <span class="user-dropdown-icon">💬</span> Help &amp; Support
+          </a>
+          <div class="user-dropdown-divider"></div>
+          <a href="#" class="user-dropdown-item user-dropdown-logout" onclick="handleLogout(event)">
+            <span class="user-dropdown-icon">🚪</span> Logout
+          </a>
+        </div>
       </div>
     </div>
   </nav>
@@ -149,26 +172,22 @@
   <div class="dashboard-container">
 
     <aside class="sidebar" id="sidebar">
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active">
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="#" class="nav-item active" data-section="home" onclick="showSection('home', event)">
           <span class="nav-text">Home</span>
         </a>
         <div class="sidebar-divider"></div>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" data-section="home" onclick="showSection('home', event)">
           <span class="nav-text">Courses</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" data-section="home" onclick="showSection('home', event)">
           <span class="nav-text">Deadlines</span>
         </a>
-        <a href="#" class="nav-item active">
+        <a href="#" class="nav-item" data-section="home" onclick="showSection('home', event)">
           <span class="nav-text">Progress</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" data-section="home" onclick="showSection('home', event)">
           <span class="nav-text">Completed</span>
-        </a>
-        <div class="sidebar-divider"></div>
-        <a href="#" class="nav-item logout-btn" id="logoutBtn" onclick="handleLogout(event)">
-          <span class="nav-text">Logout</span>
         </a>
       </nav>
     </aside>
@@ -273,7 +292,6 @@
       document.querySelector('.theme-toggle-btn').textContent = savedTheme === 'dark' ? '☀️' : '🌑';
     }
 
-    // UPDATED: sidebar toggle checks screen size to decide between mobile overlay and desktop collapse
     document.getElementById('menuToggle').addEventListener('click', () => {
       const sidebar = document.getElementById('sidebar');
       const mainContent = document.getElementById('mainContent');
@@ -286,7 +304,6 @@
       }
     });
 
-    // UPDATED: close sidebar when clicking outside of it on mobile
     document.addEventListener('click', (e) => {
       const sidebar = document.getElementById('sidebar');
       const menuToggle = document.getElementById('menuToggle');
@@ -308,14 +325,49 @@
         window.location.href = 'index.html';
         return;
       }
-      const username = localStorage.getItem('username') || user.email;
+      const storedName = localStorage.getItem('username');
+      const username = (storedName && !storedName.includes('@'))
+        ? storedName
+        : user.email.split('@')[0];
       document.getElementById('usernameDisplay').textContent = username;
       document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
       document.getElementById('welcomeTitle').textContent = 'Welcome back, ' + username + '! 👋';
+      // populate dropdown header with name + email
+      document.getElementById('userDropdownName').textContent = username;
+      document.getElementById('userDropdownEmail').textContent = user.email;
+      document.getElementById('userDropdownAvatar').textContent = username.charAt(0).toUpperCase();
+
+      const { data: profile } = await client
+        .from('profiles')
+        .select('avatar_url, username')
+        .eq('id', user.id)
+        .single();
+
+      if (profile) {
+        // use saved display name if available
+        if (profile.username) {
+          document.getElementById('usernameDisplay').textContent = profile.username;
+          document.getElementById('userDropdownName').textContent = profile.username;
+          document.getElementById('welcomeTitle').textContent = 'Welcome back, ' + profile.username + '! 👋';
+        }
+        if (profile.avatar_url) {
+          setNavAvatar(profile.avatar_url);
+        }
+      }
 
       await loadNotifications(user.id);
       subscribeToNotifications(user.id);
     });
+
+    function setNavAvatar(src) {
+      const navEl = document.getElementById('userAvatar');
+      const dropEl = document.getElementById('userDropdownAvatar');
+      const imgStyle = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+      navEl.innerHTML = `<img src="${src}" alt="Avatar" style="${imgStyle}">`;
+      navEl.style.padding = '0';
+      dropEl.innerHTML = `<img src="${src}" alt="Avatar" style="${imgStyle}">`;
+      dropEl.style.padding = '0';
+    }
 
     async function loadNotifications(userId) {
       const { data, error } = await client
@@ -384,6 +436,8 @@
 
     document.addEventListener('click', () => {
       document.getElementById('notificationDropdown').classList.remove('open');
+      // also close user dropdown on outside click
+      document.getElementById('userDropdown').classList.remove('open');
     });
 
     document.getElementById('notificationDropdown').addEventListener('click', (e) => {
@@ -397,6 +451,14 @@
       if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
       return `${Math.floor(diff / 86400)}d ago`;
     }
+
+    // toggle user dropdown on avatar click, close on outside click
+    document.getElementById('userMenuBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('userDropdown').classList.toggle('open');
+      // close notification dropdown if open
+      document.getElementById('notificationDropdown').classList.remove('open');
+    });
 
     async function handleLogout(e) {
       e.preventDefault();
